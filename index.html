@@ -21,7 +21,7 @@
   --sans:"Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
 *{box-sizing:border-box;margin:0}
-html{color-scheme:dark;background:var(--night)}
+html{color-scheme:dark;background:var(--night);scroll-behavior:smooth}
 body{
   font:400 1rem/1.6 var(--sans);
   color:var(--mist);
@@ -105,6 +105,54 @@ h1{
 .orbhint{animation:fade 1.5s ease 2.6s both}
 .mixer{animation:rise 1.1s ease 1.8s both}
 #fx{animation:fade 2.5s ease both}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.nav{display:flex;gap:1.4rem;font-size:.9rem}
+.nav a{color:var(--dim);text-decoration:none;transition:color .2s}
+.nav a:hover{color:var(--mist)}
+@media(max-width:699px){.nav{display:none}}
+
+.goalgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.5rem}
+.goal{
+  display:flex;flex-direction:column;gap:.1rem;text-align:left;padding:.8rem .95rem;border-radius:12px;
+  border:1px solid var(--line);background:transparent;color:var(--mist);cursor:pointer;font-family:var(--sans);
+  transition:border-color .2s,background .2s;
+}
+.goal:hover{border-color:var(--mist)}
+.goal[aria-pressed=true]{background:var(--mist);color:var(--night);border-color:var(--mist)}
+.gn{font-weight:500}
+.gs{font-size:.8rem;opacity:.75}
+.goalpanel{scroll-margin-bottom:8rem;margin-top:1.25rem;padding-top:1.25rem;border-top:1px solid var(--line);max-width:46rem}
+.goalpanel h3{font:400 1.5rem/1.2 var(--serif);font-variation-settings:"SOFT" 100;margin-bottom:.5rem}
+.goalpanel p{margin-top:.6rem;color:var(--dim)}
+.goalpanel .gp-mix{color:var(--mist)}
+.goalpanel .gp-care{border-left:2px solid var(--dim);padding-left:.8rem}
+.gp-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+
+.cards{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-content:start}
+.card{border:1px solid var(--line);border-radius:14px;padding:1.2rem}
+.card h3{font:400 1.25rem/1.25 var(--serif);font-variation-settings:"SOFT" 100;margin-bottom:.5rem}
+.card p{color:var(--dim);font-size:.95rem}
+.card .chip{margin-top:1rem}
+.evi{display:flex;align-items:center;gap:.5rem;font-size:.8rem;color:var(--mist);margin-bottom:.6rem}
+.dots{display:inline-flex;gap:3px}
+.dots i{width:8px;height:8px;border-radius:50%;border:1px solid var(--mist)}
+.dots i.f{background:var(--mist)}
+.steps{margin:.2rem 0 0;padding-left:1.2rem;color:var(--dim);font-size:.95rem}
+.steps li{margin-top:.35rem}
+.refs details{border-bottom:1px solid var(--line);padding:.9rem 0}
+.refs details:first-child{padding-top:0}
+.refs summary{cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+.refs summary::-webkit-details-marker{display:none}
+.refs summary::after{content:"+";color:var(--dim)}
+.refs details[open] summary::after{content:"-"}
+.refs p{margin-top:.6rem;color:var(--dim);max-width:60ch}
+.refs a{color:var(--mist);text-underline-offset:3px}
+.habits{list-style:none;padding:0;display:grid;gap:.9rem;max-width:46rem}
+.habits li{padding-left:1.4rem;position:relative;color:var(--dim)}
+.habits li::before{content:"";position:absolute;left:0;top:.65em;width:.5rem;height:.5rem;border-radius:50%;background:var(--hue)}
+.habits strong{color:var(--mist);font-weight:500}
+.orbhint{text-shadow:0 0 10px var(--night),0 0 4px var(--night)}
 
 .mixer{max-width:1120px;margin:0 auto;padding:0 1.25rem}
 .group{display:grid;gap:1rem;border-top:1px solid var(--line);padding:2rem 0}
@@ -220,13 +268,14 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
   .orbhint{transition:none}
   .mark,.w,.lede,.presets,.orbwrap,.orbhint,.mixer,#fx{animation:none}
   .tile{transition:none}
+  html{scroll-behavior:auto}
 }
 </style>
 </head>
 <body>
 <canvas id="fx" aria-hidden="true"></canvas>
 
-<header class="top"><span class="mark">Hush</span></header>
+<header class="top"><span class="mark">Hush</span><nav class="nav" aria-label="Sections"><a href="#goals">Goals</a><a href="#mixer">Sounds</a><a href="#practice">Practice</a><a href="#why">Why it helps</a><a href="#research">Research</a></nav></header>
 
 <main>
   <section class="hero">
@@ -244,7 +293,122 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
     </div>
   </section>
 
+  <div class="mixer">
+    <section class="group" id="goals" style="--hue:#D5E0DE">
+      <div class="ghead"><h2>What do you need?</h2><p>Pick one and a matching mix starts right away. You can change any sound afterwards.</p></div>
+      <div>
+        <div class="goalgrid" id="goalGrid"></div>
+        <div class="goalpanel" id="goalPanel" aria-live="polite"><p>Choose what you are doing and the right mix starts right away.</p></div>
+      </div>
+    </section>
+  </div>
+
   <div class="mixer" id="mixer"></div>
+
+  <div class="mixer">
+    <section class="group" id="practice" style="--hue:#A6C79C">
+      <div class="ghead"><h2>Practice</h2><p>Two short ways to use Hush on purpose.</p></div>
+      <div class="cards">
+        <article class="card">
+          <h3>3 minute guided breathing</h3>
+          <p>Follow the breathing circle at the top. A short line of guidance appears under it, and a calm mix plays if nothing is on.</p>
+          <button class="chip" type="button" id="startSession">Start guided breathing</button>
+        </article>
+        <article class="card">
+          <h3>Bedtime wind-down</h3>
+          <ol class="steps">
+            <li>Dim the lights and put work away.</li>
+            <li>Start the wind-down. Deep sleep begins and a 30 minute timer is set.</li>
+            <li>Follow the breathing circle for 3 minutes.</li>
+            <li>Put the phone down and let the sound fade out by itself.</li>
+          </ol>
+          <button class="chip" type="button" id="startWind">Start wind-down</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="group" id="why" style="--hue:#6DB9CC">
+      <div class="ghead"><h2>Why it helps</h2><p>What each kind of sound can do, and how well that is backed up by research.</p></div>
+      <div class="cards">
+        <article class="card">
+          <p class="evi"><span class="dots" aria-hidden="true"><i class="f"></i><i class="f"></i><i class="f"></i></span>Best supported</p>
+          <h3>Slow breathing</h3>
+          <p>Slow, steady breathing is linked to a calmer heart rhythm and less tension in many small studies. The circle at the top paces you: in for 7 seconds, hold for 5, out for 7.</p>
+        </article>
+        <article class="card">
+          <p class="evi"><span class="dots" aria-hidden="true"><i class="f"></i><i class="f"></i><i></i></span>Some evidence</p>
+          <h3>Nature sounds</h3>
+          <p>Rain, water, wind and fire. In lab studies, people recovered from a stressful task faster while listening to nature sounds than to city noise. The effect is modest, and many people simply find these sounds pleasant.</p>
+        </article>
+        <article class="card">
+          <p class="evi"><span class="dots" aria-hidden="true"><i class="f"></i><i></i><i></i></span>Mixed evidence</p>
+          <h3>Steady noise</h3>
+          <p>White, pink and brown noise can cover sudden sounds like a slammed door or traffic. Studies disagree on whether it improves sleep for everyone, so try it and see how you feel.</p>
+        </article>
+        <article class="card">
+          <p class="evi"><span class="dots" aria-hidden="true"><i class="f"></i><i></i><i></i></span>Early evidence</p>
+          <h3>Singing bowls</h3>
+          <p>People who took part in singing bowl sound meditation reported less tension and low mood afterwards. The studies are small and had no comparison group, so this is encouraging, not proof.</p>
+        </article>
+        <article class="card">
+          <p class="evi"><span class="dots" aria-hidden="true"><i class="f"></i><i></i><i></i></span>Early evidence</p>
+          <h3>Binaural beats</h3>
+          <p>A 2019 review of 22 studies found a moderate average effect on anxiety, pain and thinking tasks. Results depend on the frequency and timing, and the studies differ a lot. You need headphones, and it will not work for everyone.</p>
+        </article>
+        <article class="card">
+          <p class="evi"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>No good evidence</p>
+          <h3>432 Hz and 528 Hz</h3>
+          <p>Claims that these pitches heal or have special powers are not backed by solid research. They are calm, steady tones, so use them if you like how they sound.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="group" id="research" style="--hue:#B9A8EC">
+      <div class="ghead"><h2>The research</h2><p>Plain summaries with links to the studies. Hush is a relaxation tool, not medical treatment.</p></div>
+      <div class="refs">
+        <details>
+          <summary>Slow breathing, 2018 review</summary>
+          <p>Zaccaro and colleagues reviewed studies on slow breathing and found links with a calmer heart rhythm, more relaxation, and less anxiety, anger and low mood. <a href="https://pubmed.ncbi.nlm.nih.gov/30245619/" target="_blank" rel="noopener">Read the review</a></p>
+        </details>
+        <details>
+          <summary>Nature sounds and stress, 2010 study</summary>
+          <p>Alvarsson and colleagues gave people a stressful task, then played either nature sounds or noisy environmental sounds. Those who heard nature sounds recovered faster by one body measure of stress. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC2872309/" target="_blank" rel="noopener">Read the study</a></p>
+        </details>
+        <details>
+          <summary>White noise and hospital noise, 2005 study</summary>
+          <p>A small lab study played recorded hospital noise to healthy volunteers while they slept. Adding white noise helped them sleep through more of it. <a href="https://pubmed.ncbi.nlm.nih.gov/16139772/" target="_blank" rel="noopener">Read the study</a></p>
+        </details>
+        <details>
+          <summary>Noise as a sleep aid, 2021 review</summary>
+          <p>A systematic review of studies on continuous noise and sleep found the evidence low in quality and mixed, and cautioned against presenting noise machines as a proven sleep aid for everyone. <a href="https://pubmed.ncbi.nlm.nih.gov/33007706/" target="_blank" rel="noopener">Read the review</a></p>
+        </details>
+        <details>
+          <summary>Singing bowl meditation, 2017 study</summary>
+          <p>Goldsby and colleagues followed people through a singing bowl sound meditation and found lower tension, anger, fatigue and low mood afterwards. It was an observational study with no control group. <a href="https://journals.sagepub.com/doi/full/10.1177/2156587216668109" target="_blank" rel="noopener">Read the study</a></p>
+        </details>
+        <details>
+          <summary>Binaural beats, 2019 meta-analysis</summary>
+          <p>Garcia-Argibay and colleagues pooled 22 studies and found a moderate overall effect on cognition, anxiety and pain, depending on frequency, timing and how long people listened. <a href="https://pubmed.ncbi.nlm.nih.gov/30073406/" target="_blank" rel="noopener">Read the meta-analysis</a></p>
+        </details>
+        <details>
+          <summary>432 Hz and 528 Hz</summary>
+          <p>There is no link here because we found no solid research showing these pitches do more than any other calm, steady tone.</p>
+        </details>
+      </div>
+    </section>
+
+    <section class="group" id="habits" style="--hue:#F2A065">
+      <div class="ghead"><h2>Using it well</h2></div>
+      <ul class="habits">
+        <li><strong>Keep the volume low.</strong> If you have to raise your voice to talk over it, it is too loud.</li>
+        <li><strong>Use the sleep timer.</strong> The sound fades out over the last 20 seconds, so it never cuts off abruptly.</li>
+        <li><strong>Use headphones for beats only.</strong> Binaural beats need one tone in each ear. Everything else sounds best from a speaker across the room.</li>
+        <li><strong>Repeat the same mix.</strong> Playing the same sounds before bed each night can become a cue that it is time to rest.</li>
+        <li><strong>Stop if it does not help.</strong> People differ. If a sound keeps you awake or bothers you, turn it down or switch it off.</li>
+        <li><strong>Get help when you need it.</strong> If sleep trouble or anxiety lasts for weeks, talk to a doctor or therapist.</li>
+      </ul>
+    </section>
+  </div>
 </main>
 
 <footer class="foot">
@@ -282,6 +446,7 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)');
 /* ---------- audio engine ---------- */
 let ctx, master, analyser, bufs;
 const state = { master: 0.8 };
+let session = null, cycleT0 = 0;
 
 function makeBuf(kind) {
   const full = Math.floor(ctx.sampleRate * 8);
@@ -663,8 +828,97 @@ function startTimer(min) {
 }
 timerBtns.forEach(b => b.addEventListener('click', () => startTimer(+b.dataset.min)));
 
-function stopAll() { sounds.forEach(turnOff); clearTimer(); }
+function stopAll() { sounds.forEach(turnOff); clearTimer(); session = null; }
 $('#stopAll').addEventListener('click', stopAll);
+
+/* ---------- goals, guided breathing ---------- */
+const SESSION_LEN = 180, HINT0 = 'Breathe with the circle. Tap it to begin.';
+const COACH = [
+  [0, 'Sit comfortably and let your shoulders drop.'],
+  [20, 'Breathe in through your nose and out slowly through your mouth.'],
+  [70, 'If your mind wanders, gently come back to the circle.'],
+  [130, 'Notice how your body feels now.'],
+  [168, 'Well done. Stay as long as you like.']
+];
+function coach(el) {
+  let line = COACH[0][1];
+  for (const [at, tx] of COACH) if (el >= at) line = tx;
+  const left = Math.max(0, Math.ceil(SESSION_LEN - el));
+  return line + '  ' + Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
+}
+function startSession() {
+  if (!sounds.some(s => s.on)) applyMix({ stream: .4, wind: .15 });
+  cycleT0 = performance.now() / 1000;
+  session = { start: Date.now() };
+  window.scrollTo({ top: 0, behavior: reduce.matches ? 'auto' : 'smooth' });
+}
+$('#startSession').addEventListener('click', startSession);
+$('#startWind').addEventListener('click', () => { applyMix({ brown: .4, waves: .3, wind: .1 }); startTimer(30); startSession(); });
+
+const GOALS = [
+  { name: 'Sleep', sub: 'Fall asleep', mix: { brown: .4, waves: .3, wind: .1 }, timer: 30, session: true,
+    why: 'A low, steady sound covers sudden noises like a door or a car, which can pull you out of light sleep.',
+    tip: 'Keep it quiet, and use the timer so the sound fades out once you are asleep.' },
+  { name: 'Power nap', sub: 'A short rest', mix: { pink: .4, rain: .3 }, timer: 20,
+    why: 'A steady sound masks the noise around you so you can drop off faster, and the timer ends it for you.',
+    tip: 'The sound fades out softly instead of waking you, so also set a phone alarm for the nap.' },
+  { name: 'Meditation', sub: 'Sit and focus', mix: { bowl: .4, wind: .12, stream: .2 }, timer: 20, session: true,
+    why: 'Soft, repeating sounds give your attention a gentle anchor to come back to. A struck bowl marks time without a harsh alarm.',
+    tip: 'When your mind wanders, return to the sound or to the breathing circle. Wandering is normal.' },
+  { name: 'Stress relief', sub: 'Unwind', mix: { stream: .5, wind: .2, crickets: .15 }, timer: 15, session: true,
+    why: 'In lab studies, people recovered from stress a little faster while listening to nature sounds than to city noise.',
+    tip: 'Try the guided breathing for three minutes before you go back to what was stressing you.' },
+  { name: 'Anxiety', sub: 'Calm racing thoughts', mix: { brown: .35, waves: .4, bowl: .2 }, timer: 20, session: true,
+    why: 'Slow breathing can settle your body, and a deep, steady sound gives a busy mind something to rest on.',
+    tip: 'Breathe out slowly and let your shoulders drop. Name five things you can see if your thoughts keep racing.',
+    care: 'Hush is a relaxation aid, not a treatment. If anxiety is strong or lasts for weeks, please talk to a doctor or therapist.' },
+  { name: 'Focus', sub: 'Study or work', mix: { pink: .4, rain: .25 },
+    why: 'Even, low-key noise can cover distracting sounds like voices and traffic.',
+    tip: 'Keep it low. Loud sound makes it harder to concentrate, not easier.' },
+  { name: 'Reading', sub: 'A quiet evening', mix: { embers: .5, rain: .3 },
+    why: 'A soft crackle and gentle rain make a cozy background that does not compete with the words.',
+    tip: 'Turn the volume down until you only notice the sound when you listen for it.' },
+  { name: 'Camping', sub: 'An evening outdoors', mix: { campfire: .6, crickets: .3, wind: .12, stream: .15 },
+    why: 'Fire, crickets and a stream bring the feeling of an evening outside to wherever you are.',
+    tip: 'Dim the room lights to a warm glow and let the fire do the rest.' },
+  { name: 'Yoga', sub: 'Move slowly', mix: { waves: .35, bowl: .3, wind: .1 }, timer: 30,
+    why: 'Slow swells match slow movement, and the bowl marks the start and end of a session without an alarm.',
+    tip: 'Match your breath to the waves, in as they rise and out as they fall.' },
+  { name: 'Baby', sub: 'Soothe an infant', mix: { pink: .3 },
+    why: 'A steady shushing-like sound is a common way to settle infants, because it resembles sounds from the womb.',
+    tip: 'Keep it quiet and put the device across the room, never in the crib.',
+    care: 'Ask your pediatrician about safe sound levels for your baby. Do not play it all night at a loud volume.' },
+  { name: 'Rainy day', sub: 'Cozy indoors', mix: { rain: .55, thunder: .3, embers: .3 },
+    why: 'Rain with distant thunder and a warm fire is a mix many people find cozy.',
+    tip: 'Pair it with a hot drink and a blanket.' },
+  { name: 'Noisy place', sub: 'Block a loud room', mix: { brown: .45, pink: .25 },
+    why: 'Deep, steady noise covers speech and traffic better than quiet does, so you notice them less.',
+    tip: 'Raise the volume just enough to blur the voices, and no more.' }
+];
+const goalGrid = $('#goalGrid'), goalPanel = $('#goalPanel');
+function showGoal(g, btn) {
+  goalGrid.querySelectorAll('.goal').forEach(b => b.setAttribute('aria-pressed', b === btn));
+  const names = Object.keys(g.mix).map(id => byId[id].name).join(', ');
+  let html = '<h3>' + g.name + '</h3><p>' + g.why + '</p><p class="gp-mix">Playing: ' + names + '.</p><p>' + g.tip + '</p>';
+  if (g.care) html += '<p class="gp-care">' + g.care + '</p>';
+  html += '<div class="gp-actions">';
+  if (g.timer) html += '<button class="chip" type="button" data-act="timer">Set a ' + g.timer + ' minute timer</button>';
+  if (g.session) html += '<button class="chip" type="button" data-act="session">Guided breathing, 3 minutes</button>';
+  html += '</div>';
+  goalPanel.innerHTML = html;
+  goalPanel.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' });
+  goalPanel.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
+    if (b.dataset.act === 'timer') { startTimer(g.timer); b.textContent = 'Timer set for ' + g.timer + ' minutes'; }
+    else startSession();
+  }));
+}
+GOALS.forEach(g => {
+  const b = document.createElement('button');
+  b.className = 'goal'; b.type = 'button'; b.setAttribute('aria-pressed', 'false');
+  b.innerHTML = '<span class="gn">' + g.name + '</span><span class="gs">' + g.sub + '</span>';
+  b.addEventListener('click', () => { applyMix(g.mix); showGoal(g, b); });
+  goalGrid.append(b);
+});
 
 /* ---------- ui state ---------- */
 function refresh() {
@@ -680,7 +934,7 @@ function refresh() {
 
 /* ---------- the orb ---------- */
 const cv = $('#orb'), c = cv.getContext('2d'), capWord = $('#capWord'), capNum = $('#capNum');
-let dpr = 1, W = 0, H = 0, lastWord = '', lastNum = '', hintOn = null;
+let dpr = 1, W = 0, H = 0, lastWord = '', lastNum = '', lastHint = HINT0;
 const hint = $('#orbHint');
 const IN = 7, HOLD = 5, OUT = 7, CYCLE = IN + HOLD + OUT, TAU = Math.PI * 2;
 const fd = new Uint8Array(128);
@@ -712,7 +966,7 @@ function frame(ms) {
 
   let playing = 0;
   for (const s of sounds) if (s.on) playing++;
-  const ph = t % CYCLE;
+  const ph = (((t - cycleT0) % CYCLE) + CYCLE) % CYCLE;
   const inhale = ph < IN, holding = ph >= IN && ph < IN + HOLD;
   const prog = inhale ? ph / IN : holding ? (ph - IN) / HOLD : (ph - IN - HOLD) / OUT;
   const e = (1 - Math.cos(Math.PI * prog)) / 2;
@@ -767,8 +1021,14 @@ function frame(ms) {
   else { word = inhale ? 'Breathe in' : holding ? 'Hold' : 'Breathe out'; num = String(Math.ceil((inhale ? IN : holding ? HOLD : OUT) * (1 - prog))); }
   if (word !== lastWord) { capWord.textContent = word; lastWord = word; }
   if (num !== lastNum) { capNum.textContent = num; lastNum = num; }
-  const showHint = playing === 0;
-  if (showHint !== hintOn) { hint.classList.toggle('off', !showHint); orbWrap.classList.toggle('tap', showHint); hintOn = showHint; }
+  let hintText = HINT0, showHint = playing === 0;
+  if (session) {
+    const el = (Date.now() - session.start) / 1000;
+    if (el >= SESSION_LEN) session = null; else { hintText = coach(el); showHint = true; }
+  }
+  if (hintText !== lastHint) { hint.textContent = hintText; lastHint = hintText; }
+  hint.classList.toggle('off', !showHint);
+  orbWrap.classList.toggle('tap', playing === 0 && !session);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
