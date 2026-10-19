@@ -632,7 +632,7 @@ function refresh() {
 const cv = $('#orb'), c = cv.getContext('2d'), capWord = $('#capWord'), capNum = $('#capNum');
 let dpr = 1, W = 0, H = 0, lastWord = '', lastNum = '', hintOn = null;
 const hint = $('#orbHint');
-const IN = 5, OUT = 8, CYCLE = IN + OUT, TAU = Math.PI * 2;
+const IN = 7, HOLD = 5, OUT = 7, CYCLE = IN + HOLD + OUT, TAU = Math.PI * 2;
 const fd = new Uint8Array(128);
 const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(',');
 function fit() {
@@ -663,10 +663,10 @@ function frame(ms) {
   let playing = 0;
   for (const s of sounds) if (s.on) playing++;
   const ph = t % CYCLE;
-  const inhale = ph < IN;
-  const prog = inhale ? ph / IN : (ph - IN) / OUT;
+  const inhale = ph < IN, holding = ph >= IN && ph < IN + HOLD;
+  const prog = inhale ? ph / IN : holding ? (ph - IN) / HOLD : (ph - IN - HOLD) / OUT;
   const e = (1 - Math.cos(Math.PI * prog)) / 2;
-  const breath = reduce.matches ? .5 : (inhale ? e : 1 - e);
+  const breath = reduce.matches ? .5 : (inhale ? e : holding ? 1 : 1 - e);
 
   let energy = 0;
   if (analyser) { analyser.getByteFrequencyData(fd); let sum = 0; for (let i = 0; i < fd.length; i++) sum += fd[i]; energy = sum / fd.length / 255; }
@@ -689,7 +689,7 @@ function frame(ms) {
     gr.addColorStop(1, 'rgba(213,224,222,' + (.07 * guide) + ')');
     c.fillStyle = gr; c.beginPath(); c.arc(mx, my, rg, 0, TAU); c.fill();
     if (!reduce.matches) {
-      const ra = R * .30, a0 = -Math.PI / 2, lead = inhale ? prog : 1 - prog;
+      const ra = R * .30, a0 = -Math.PI / 2, lead = inhale ? prog : holding ? 1 : 1 - prog;
       c.lineWidth = 3 * dpr; c.lineCap = 'round';
       c.strokeStyle = 'rgba(213,224,222,' + (.16 * guide) + ')';
       c.beginPath(); c.arc(mx, my, ra, 0, TAU); c.stroke();
@@ -714,7 +714,7 @@ function frame(ms) {
 
   let word, num = '';
   if (reduce.matches) word = 'Breathe slowly';
-  else { word = inhale ? 'Breathe in' : 'Breathe out'; num = String(Math.ceil((inhale ? IN : OUT) * (1 - prog))); }
+  else { word = inhale ? 'Breathe in' : holding ? 'Hold' : 'Breathe out'; num = String(Math.ceil((inhale ? IN : holding ? HOLD : OUT) * (1 - prog))); }
   if (word !== lastWord) { capWord.textContent = word; lastWord = word; }
   if (num !== lastNum) { capNum.textContent = num; lastNum = num; }
   const showHint = playing === 0;
