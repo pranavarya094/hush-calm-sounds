@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hush: calm sounds to relax</title>
-<meta name="description" content="Mix fire, rain, waves and steady tones. Breathe along with a guide. Free, private, and made in your browser.">
+<meta name="description" content="Peace should not be paid for. Hush is free for everyone: fire, rain, waves and steady tones, plus a breathing guide, made in your browser.">
 <meta name="theme-color" content="#0F1B24">
 <link rel="canonical" href="https://pranavarya094.github.io/hush-calm-sounds/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hush">
 <meta property="og:title" content="Hush: calm sounds to relax">
-<meta property="og:description" content="Mix fire, rain, waves and steady tones. Breathe along with a guide. Free, private, and made in your browser.">
+<meta property="og:description" content="Peace should not be paid for. Hush is free for everyone: fire, rain, waves and steady tones, plus a breathing guide, made in your browser.">
 <meta property="og:url" content="https://pranavarya094.github.io/hush-calm-sounds/">
 <meta property="og:image" content="https://pranavarya094.github.io/hush-calm-sounds/og.png">
 <meta property="og:image:width" content="1200">
@@ -18,9 +18,9 @@
 <meta property="og:image:alt" content="Hush, calm sounds to relax, with a glowing breathing circle">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Hush: calm sounds to relax">
-<meta name="twitter:description" content="Mix fire, rain, waves and steady tones. Breathe along with a guide. Free, private, and made in your browser.">
+<meta name="twitter:description" content="Peace should not be paid for. Hush is free for everyone: fire, rain, waves and steady tones, plus a breathing guide, made in your browser.">
 <meta name="twitter:image" content="https://pranavarya094.github.io/hush-calm-sounds/og.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Hush","description":"Calm sounds to relax, sleep and focus, with a guided breathing circle.","url":"https://pranavarya094.github.io/hush-calm-sounds/","applicationCategory":"HealthApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"inLanguage":["en","de","hi"]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Hush","description":"Free calm sounds to relax, sleep and focus, with a guided breathing circle. Peace should not be paid for.","author":{"@type":"Person","name":"Pranav Arya","url":"https://pranavarya.com"},"url":"https://pranavarya094.github.io/hush-calm-sounds/","applicationCategory":"HealthApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"inLanguage":["en","de","hi"]}</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230F1B24'/%3E%3Ccircle cx='32' cy='32' r='16' fill='none' stroke='%236DB9CC' stroke-width='3'/%3E%3Ccircle cx='32' cy='32' r='8' fill='none' stroke='%23F2A065' stroke-width='3'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +40,6 @@ body{font:400 1rem/1.6 var(--sans);color:var(--mist);background:var(--night);min
 button{font-family:inherit}
 #fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;animation:fade 2.5s ease both}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-/* top bar */
 .top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:.5rem 1rem;flex-wrap:wrap;max-width:960px;margin:0 auto;padding:1rem 1.25rem}
 .mark{font:400 1.5rem/1 var(--serif);font-variation-settings:"SOFT" 100;letter-spacing:-.01em;color:inherit;text-decoration:none}
 .nav{display:flex;align-items:center;gap:.2rem}
@@ -51,8 +50,8 @@ button{font-family:inherit}
 .lang button{background:none;border:0;color:var(--dim);font:500 .85rem/1 var(--sans);padding:.5rem;cursor:pointer;border-radius:8px}
 .lang button[aria-pressed=true]{color:var(--mist);text-decoration:underline;text-underline-offset:5px}
 @media(max-width:560px){.nav{order:3;width:100%;justify-content:center}}
-/* main + stage */
-main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 1.25rem calc(var(--dock) + 2.5rem + env(safe-area-inset-bottom))}
+main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 1.25rem calc(var(--dock) + 2.5rem + env(safe-area-inset-bottom));display:flex;flex-direction:column}
+main>*{width:100%}
 main:focus{outline:none}
 .stage{text-align:center}
 .hero-copy{max-height:12rem;overflow:hidden;transition:opacity .6s,max-height .6s,margin .6s;animation:rise 1.1s cubic-bezier(.2,.7,.2,1) .2s backwards}
@@ -67,20 +66,41 @@ h1{font:300 clamp(2rem,5vw,3rem)/1.1 var(--serif);font-variation-settings:"SOFT"
 .cap-num:empty{display:none}
 .orbhint{position:absolute;left:0;right:0;bottom:2%;text-align:center;pointer-events:none;color:var(--dim);font-size:.9rem;line-height:1.4;padding:0 .5rem;text-shadow:0 0 10px var(--night),0 0 4px var(--night);transition:opacity .8s;animation:fade 1.5s ease 2.4s backwards}
 .orbhint.off{opacity:0}
-/* views */
 .view{padding-top:1rem}
-.goals{display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem;max-width:42rem;margin:.6rem auto 0;animation:rise 1.1s cubic-bezier(.2,.7,.2,1) 1.1s backwards}
-.pill{font:500 .9rem/1 var(--sans);color:var(--mist);background:transparent;border:1px solid var(--line);border-radius:999px;padding:.65rem 1rem;cursor:pointer;transition:border-color .2s,background .2s,color .2s}
-.pill:hover{border-color:var(--mist)}
-.pill[aria-pressed=true]{background:var(--mist);color:var(--night);border-color:var(--mist)}
-@media(max-width:620px){
-.goals{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;scroll-snap-type:x proximity;margin-inline:-1.25rem;padding:.2rem 1.25rem .5rem;scrollbar-width:none}
-.goals::-webkit-scrollbar{display:none}
-.pill{flex:none;scroll-snap-align:start}
-}
-.detail{margin:.9rem auto 0;max-width:34rem;text-align:center}
+.tag{margin:.7rem auto 0;max-width:30rem;font:italic 300 1.1rem/1.4 var(--serif);font-variation-settings:"SOFT" 100;color:var(--mist);text-wrap:balance}
+.quote{order:1;text-align:center;max-width:36rem;margin:1.1rem auto 0;min-height:5.2rem;display:flex;flex-direction:column;align-items:center;gap:.6rem}
+.q-text{font:300 1.15rem/1.45 var(--serif);font-variation-settings:"SOFT" 100;color:var(--mist);text-wrap:balance;transition:opacity .6s}
+.q-text.out{opacity:0}
+body.route-learn .quote,body.route-developer .quote{order:99;margin-top:2.2rem}
+.stage{order:0}.view{order:2}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:1rem;animation:rise 1.1s cubic-bezier(.2,.7,.2,1) 1.1s backwards}
+@media(max-width:620px){.cards{grid-template-columns:repeat(2,1fr)}}
+.cust{grid-column:1/-1;display:flex;align-items:center;gap:.9rem;text-align:left;color:var(--mist);background:rgba(213,224,222,.04);border:1px dashed rgba(213,224,222,.38);border-radius:16px;padding:.95rem 1.1rem;cursor:pointer;transition:border-color .2s,background .2s}
+.cust:hover{border-color:var(--mist);background:rgba(213,224,222,.08)}
+.cust .ci{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--line);display:grid;place-items:center}
+.cust svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cust b{display:block;font:400 1.15rem/1.25 var(--serif);font-variation-settings:"SOFT" 100}
+.cust small{display:block;color:var(--dim);font-size:.88rem;margin-top:.1rem}
+.gcard{position:relative;overflow:hidden;height:108px;padding:.7rem .8rem;border-radius:14px;border:1px solid var(--line);background:var(--deep);color:#fff;text-align:left;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;gap:.1rem;transition:border-color .2s,transform .25s}
+.gcard canvas{position:absolute;inset:0;width:100%;height:100%}
+.gcard::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,14,19,.9),rgba(8,14,19,0) 78%)}
+.gcard .gn,.gcard .gs{position:relative;z-index:1}
+.gcard .gn{font:500 .98rem/1.2 var(--sans)}
+.gcard .gs{font-size:.78rem;line-height:1.3;color:var(--mist);opacity:.8}
+.gcard:hover{border-color:var(--mist);transform:translateY(-2px)}
+.gcard[aria-pressed=true]{border-color:var(--mist);box-shadow:0 0 0 1px var(--mist)}
+.eq{position:absolute;z-index:2;top:.6rem;right:.65rem;display:none;align-items:flex-end;gap:2px;height:14px;padding:5px 7px;border-radius:999px;background:rgba(10,19,26,.7);box-sizing:content-box}
+.gcard[aria-pressed=true] .eq{display:flex}
+.eq i{width:3px;height:14px;background:var(--mist);border-radius:2px;transform-origin:bottom;animation:eq 1s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:-.4s}.eq i:nth-child(3){animation-delay:-.7s}
+body.paused .eq i{animation-play-state:paused}
+@keyframes eq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+.pull{margin-top:1.4rem;font:italic 300 1.35rem/1.4 var(--serif);font-variation-settings:"SOFT" 100;color:var(--mist);text-wrap:balance}
+.page .body{margin-top:.6rem;color:var(--dim);max-width:60ch}
+.acts.left{justify-content:flex-start;margin-top:.9rem}
+.detail{grid-column:1/-1;margin:.2rem 0;padding:1rem 1.1rem;border:1px solid var(--line);border-radius:14px;text-align:center}
 .detail:empty{display:none}
-.detail h2{font:400 1.25rem/1.2 var(--serif);font-variation-settings:"SOFT" 100}
+.detail h2{margin:0;font:400 1.25rem/1.2 var(--serif);font-variation-settings:"SOFT" 100}
 .detail p{color:var(--dim);margin-top:.35rem}
 .detail .mixline{color:var(--mist);font-size:.9rem}
 .detail .care{font-size:.9rem;border-top:1px solid var(--line);padding-top:.6rem;margin-top:.8rem}
@@ -88,7 +108,6 @@ h1{font:300 clamp(2rem,5vw,3rem)/1.1 var(--serif);font-variation-settings:"SOFT"
 .chip{font:500 .9rem/1 var(--sans);color:var(--mist);background:transparent;border:1px solid var(--line);border-radius:999px;padding:.7rem 1.05rem;cursor:pointer;transition:border-color .2s,background .2s}
 .chip:hover{border-color:var(--mist)}
 .chip[aria-pressed=true]{background:var(--mist);color:var(--night);border-color:var(--mist)}
-/* breathe + learn */
 .page{max-width:44rem;margin:0 auto}
 .page h2{font:400 1.5rem/1.2 var(--serif);font-variation-settings:"SOFT" 100;margin-top:1.6rem}
 .page .sub{color:var(--dim);margin-top:.3rem}
@@ -120,9 +139,8 @@ details.item .src a{color:var(--mist);text-underline-offset:3px;margin-right:.8r
 .fb{margin-top:1.8rem}
 .fine{margin-top:1.6rem;color:var(--dim);font-size:.85rem;max-width:56ch}
 a.chip{display:inline-block;text-decoration:none}
-/* dock */
 .dock{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(10,19,26,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
-.dock-in{max-width:960px;margin:0 auto;height:var(--dock);padding:0 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:.6rem}
+.dock-in{max-width:960px;margin:0 auto;height:var(--dock);padding:0 1.25rem;display:flex;align-items:center;justify-content:center;gap:.9rem}
 .dbtn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-width:44px;height:44px;padding:0 .95rem;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--mist);font:500 .9rem/1 var(--sans);cursor:pointer;transition:border-color .2s,background .2s}
 .dbtn:hover{border-color:var(--mist)}
 .dbtn svg,.hp{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
@@ -132,16 +150,14 @@ a.chip{display:inline-block;text-decoration:none}
 .tw{position:relative}
 .pop{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);display:flex;gap:.4rem;padding:.5rem;background:var(--deep);border:1px solid var(--line);border-radius:16px;white-space:nowrap}
 .chip.sm{padding:.55rem .8rem;font-size:.85rem}
-.dvol{display:flex;align-items:center;flex:0 1 170px}
-@media(max-width:760px){.dvol{display:none}.dbtn .lbl{display:none}.dbtn.sounds{padding:0 .8rem}}
-/* range */
+.dvol{display:flex;align-items:center;flex:0 1 190px}
+@media(max-width:560px){.dvol{display:none}}
 input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;--p:50%;--c:var(--hue,var(--mist))}
 input[type=range]::-webkit-slider-runnable-track{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--c) var(--p),rgba(213,224,222,.2) var(--p))}
 input[type=range]::-moz-range-track{height:3px;border-radius:2px;background:rgba(213,224,222,.2)}
 input[type=range]::-moz-range-progress{height:3px;border-radius:2px;background:var(--c)}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--mist);border:0;margin-top:-6.5px}
 input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--mist);border:0}
-/* sounds sheet */
 dialog.sheet{border:1px solid var(--line);padding:0;background:var(--deep);color:var(--mist);width:min(560px,calc(100% - 2rem));max-height:min(86vh,720px);border-radius:20px;margin:auto}
 dialog.sheet::backdrop{background:rgba(4,8,12,.65)}
 .sh{overflow:auto;max-height:inherit;padding:1.1rem 1.25rem 1.4rem}
@@ -160,23 +176,24 @@ dialog.sheet::backdrop{background:rgba(4,8,12,.65)}
 .sh-foot{display:flex;flex-wrap:wrap;align-items:center;gap:.8rem 1rem;margin-top:1.4rem;padding-top:1.1rem;border-top:1px solid var(--line)}
 .sh-foot .vol{display:flex;align-items:center;gap:.7rem;flex:1 1 200px;color:var(--dim);font-size:.9rem}
 .sh-foot input{--c:var(--mist)}
-/* sleep mode */
 #sleepbar{display:none}
-body.sleep .top,body.sleep .dock,body.sleep .view,body.sleep .hero-copy,body.sleep #fx,body.sleep main>.page{display:none!important}
+body.sleep .top,body.sleep .dock,body.sleep .view,body.sleep .quote,body.sleep .hero-copy,body.sleep #fx,body.sleep main>.page{display:none!important}
 body.sleep main{padding:0}
 body.sleep #stage{position:fixed;inset:0;z-index:50;background:#04080b;display:grid;place-items:center;filter:brightness(.7)}
 body.sleep .orbwrap{width:min(86vw,72vh);margin:0}
 body.sleep #sleepbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.25rem calc(1rem + env(safe-area-inset-bottom));color:var(--dim);font-size:.9rem}
-body.route-breathe .hero-copy,body.route-learn .hero-copy{display:none}
-body.route-learn #stage{display:none}
+body.route-breathe .hero-copy,body.route-learn .hero-copy,body.route-developer .hero-copy{display:none}
+body.route-learn #stage,body.route-developer #stage{display:none}
 body.sleep #stage{display:grid!important}
 @keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
 @keyframes orbin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){
 html{scroll-behavior:auto}
-.hero-copy,.orbwrap,.goals,.orbhint,#fx{animation:none}
-.hero-copy,.orbhint,.pill,.chip,.snd,.pat{transition:none}
+.hero-copy,.orbwrap,.cards,.orbhint,#fx{animation:none}
+.eq i{animation:none;transform:scaleY(.7)}
+.q-text{transition:none}
+.hero-copy,.orbhint,.gcard,.cust,.chip,.snd,.pat{transition:none}
 }
 </style>
 </head>
@@ -188,6 +205,7 @@ html{scroll-behavior:auto}
 <a href="#/" data-route="listen" data-i18n="nav_listen">Listen</a>
 <a href="#/breathe" data-route="breathe" data-i18n="nav_breathe">Breathe</a>
 <a href="#/learn" data-route="learn" data-i18n="nav_learn">Learn</a>
+<a href="#/developer" data-route="developer" data-i18n="nav_dev">Developer</a>
 </nav>
 <div class="lang" role="group" aria-label="Language">
 <button type="button" data-lang="en" aria-pressed="true">EN</button>
@@ -200,6 +218,7 @@ html{scroll-behavior:auto}
 <div class="hero-copy">
 <h1 data-i18n="h1">Turn the room down.</h1>
 <p class="lede" data-i18n="lede">Fire, water, wind and steady tones, made in your browser.</p>
+<p class="tag" data-i18n="tag">Peace should not be paid for. It is free, for everyone.</p>
 </div>
 <div class="orbwrap" id="orbWrap" role="button" tabindex="0" data-i18n-aria="aria_orb" aria-label="Start a calming mix">
 <canvas id="orb" aria-hidden="true"></canvas>
@@ -207,9 +226,12 @@ html{scroll-behavior:auto}
 <p class="orbhint" id="orbHint">Breathe with the circle. Tap it to begin.</p>
 </div>
 </section>
+<aside class="quote" id="quoteBox" aria-label="Quote">
+<p class="q-text" id="qText"></p>
+<button class="chip sm" type="button" id="qNew" data-i18n="q_new">Another quote</button>
+</aside>
 <section class="view" id="v-listen">
-<div class="goals" id="goals" role="group" data-i18n-aria="aria_goals" aria-label="What do you need?"></div>
-<div class="detail" id="detail" aria-live="polite"></div>
+<div class="cards" id="cards" role="group" data-i18n-aria="aria_goals" aria-label="What do you need?"></div>
 </section>
 <section class="view page" id="v-breathe" hidden>
 <h2 data-i18n="b_rhythm">Choose a rhythm</h2>
@@ -230,13 +252,24 @@ html{scroll-behavior:auto}
 </div>
 <p class="fine" data-i18n="disc">Hush is a relaxation aid, not medical treatment. If sleep problems or anxiety last for weeks, talk to a doctor or therapist.</p>
 </section>
+<section class="view page" id="v-developer" hidden>
+<h2 data-i18n="d_h">Made by Pranav Arya</h2>
+<p class="body" data-i18n="d_p1"></p>
+<h2 data-i18n="d_h2">Why Hush is free</h2>
+<p class="body" data-i18n="d_p2"></p>
+<p class="body" data-i18n="d_p3"></p>
+<p class="pull" data-i18n="tag">Peace should not be paid for. It is free, for everyone.</p>
+<h2 data-i18n="d_h3">Why these sounds matter</h2>
+<ul class="habits" id="whyList"></ul>
+<h2 data-i18n="d_h4">Say hello</h2>
+<p class="body" data-i18n="d_p4"></p>
+<p class="acts left"><a class="chip" href="https://pranavarya.com" target="_blank" rel="noopener" data-i18n="d_site">Visit pranavarya.com</a><a class="chip" href="https://github.com/pranavarya094/hush-calm-sounds/issues/new?title=Hello" target="_blank" rel="noopener" data-i18n="fb_b">Suggest on GitHub</a></p>
+<p class="fine" data-i18n="d_priv"></p>
+<p class="fine" data-i18n="disc">Hush is a relaxation aid, not medical treatment.</p>
+</section>
 </main>
 <div class="dock">
 <div class="dock-in">
-<button class="dbtn sounds" type="button" id="soundsBtn" aria-haspopup="dialog">
-<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M4 12h4M12 12h8"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/><circle cx="10" cy="12" r="2"/></svg>
-<span class="lbl" data-i18n="sounds">Sounds</span><span class="cnt" id="cnt" hidden>0</span>
-</button>
 <button class="dbtn main" type="button" id="playBtn" aria-label="Play">
 <svg id="icoPlay" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
 <svg id="icoPause" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
@@ -293,10 +326,10 @@ const store = {
 get(k) { try { return localStorage.getItem('hush.' + k); } catch (e) { return null; } },
 set(k, v) { try { localStorage.setItem('hush.' + k, v); } catch (e) {} }
 };
-/* ---------- language ---------- */
 const I18N = {
 en: {
 ui: {
+nav_dev: "Developer", tag: "Peace should not be paid for. It is free, for everyone.", cust_t: "Customize your own sound", cust_d: "Mix fire, rain, waves and tones to taste", cust_n: "{n} playing. Tap to adjust", q_new: "Another quote", d_h: "Made by Pranav Arya", d_p1: "Hi, I'm Pranav, a filmmaker and creative director based in Berlin. I built Hush because I wanted one quiet corner of the internet that asks nothing from you.", d_h2: "Why Hush is free", d_p2: "Apps like this usually charge a subscription before you can even hear the rain. I don't think peace should have a price. Hush is free for everyone, with no account, no ads and no paywall.", d_p3: "I want people to feel free and at peace, wherever they are and whatever they can afford. If this page helps one person sleep a little better or get through a hard evening, it has done its job.", d_h3: "Why these sounds matter", d_h4: "Say hello", d_p4: "Found a bug, missing a sound, or want to tell me how Hush helped? I would love to hear it.", d_site: "Visit pranavarya.com", d_priv: "A note on privacy: every sound is made in your browser and nothing you play is recorded. To see how many people use Hush and from which countries, the site notes the approximate city and country of a visit. No name, no email, no audio.",
 nav_listen: "Listen", nav_breathe: "Breathe", nav_learn: "Learn",
 h1: "Turn the room down.",
 lede: "Fire, water, wind and steady tones, made in your browser.",
@@ -341,6 +374,7 @@ delta: ["Delta beat", "2.5 Hz binaural beat. Headphones needed."], theta: ["Thet
 alpha: ["Alpha beat", "10 Hz binaural beat. Headphones needed."], hz432: ["432 Hz", "A steady, warm hum"], hz528: ["528 Hz", "A steady, brighter hum"]
 },
 scenes: [["Fireside", "Campfire, soft rain, wind"], ["Rain on the roof", "Steady rain, far thunder"], ["Night by the sea", "Waves, wind, crickets"], ["Forest stream", "Water, wind, night insects"], ["Deep sleep", "Brown noise, waves, a bowl"], ["Stormy night", "Close thunder, heavy rain"], ["Slow train", "Wheels, a fan, a heartbeat"]],
+why: ["Life is loud. Constant noise and notifications keep the body on alert. Steady, natural sounds give your attention something gentle to rest on.", "Rest is a basic need. A low, even sound can cover the noises that pull you out of sleep, and many people find it easier to wind down with it.", "Breathing is the one tool you always carry. Slow breathing is linked to feeling calmer, and the circle gives you a pace to follow.", "A pause should not depend on money. Everyone deserves a few quiet minutes, not only those who can pay for them."],
 goals: [
 { n: "Sleep", s: "Fall asleep", w: "A low, steady sound covers sudden noises like a door or a car, which can pull you out of light sleep.", t: "Keep it quiet, and use the timer so the sound fades out once you are asleep." },
 { n: "Power nap", s: "A short rest", w: "A steady sound masks the noise around you so you can drop off faster, and the timer ends it for you.", t: "The sound fades out softly instead of waking you, so also set a phone alarm for the nap." },
@@ -384,6 +418,7 @@ tips: [
 },
 de: {
 ui: {
+nav_dev: "Entwickler", tag: "Frieden sollte nichts kosten. Er ist frei, für alle.", cust_t: "Gestalte deinen eigenen Klang", cust_d: "Mische Feuer, Regen, Wellen und Töne nach Geschmack", cust_n: "{n} aktiv. Tippen zum Anpassen", q_new: "Noch ein Zitat", d_h: "Von Pranav Arya", d_p1: "Hallo, ich bin Pranav, Filmemacher und Creative Director in Berlin. Ich habe Hush gebaut, weil ich eine ruhige Ecke im Internet wollte, die nichts von dir verlangt.", d_h2: "Warum Hush kostenlos ist", d_p2: "Solche Apps verlangen meist ein Abo, bevor man auch nur den Regen hört. Ich finde nicht, dass Ruhe einen Preis haben sollte. Hush ist für alle kostenlos, ohne Konto, ohne Werbung und ohne Bezahlschranke.", d_p3: "Ich möchte, dass Menschen sich frei und friedlich fühlen, egal wo sie sind und was sie sich leisten können. Wenn diese Seite einem einzigen Menschen hilft, etwas besser zu schlafen oder einen schweren Abend zu überstehen, hat sie ihren Zweck erfüllt.", d_h3: "Warum diese Klänge wichtig sind", d_h4: "Sag Hallo", d_p4: "Einen Fehler gefunden, einen Klang vermisst oder möchtest du mir erzählen, wie Hush dir geholfen hat? Ich freue mich darauf, es zu hören.", d_site: "pranavarya.com besuchen", d_priv: "Hinweis zum Datenschutz: Alle Klänge entstehen in deinem Browser, nichts davon wird aufgezeichnet. Um zu sehen, wie viele Menschen Hush aus welchen Ländern nutzen, erfasst die Seite ungefähr Stadt und Land eines Besuchs. Kein Name, keine E-Mail, kein Audio.",
 nav_listen: "Hören", nav_breathe: "Atmen", nav_learn: "Wissen",
 h1: "Dreh den Raum leiser.",
 lede: "Feuer, Wasser, Wind und ruhige Töne, direkt in deinem Browser erzeugt.",
@@ -428,6 +463,7 @@ delta: ["Delta-Beat", "2,5 Hz binauraler Beat. Kopfhörer nötig."], theta: ["Th
 alpha: ["Alpha-Beat", "10 Hz binauraler Beat. Kopfhörer nötig."], hz432: ["432 Hz", "Ein gleichmäßiges, warmes Summen"], hz528: ["528 Hz", "Ein gleichmäßiges, helleres Summen"]
 },
 scenes: [["Am Kamin", "Lagerfeuer, leiser Regen, Wind"], ["Regen auf dem Dach", "Gleichmäßiger Regen, fernes Donnern"], ["Nacht am Meer", "Wellen, Wind, Grillen"], ["Waldbach", "Wasser, Wind, Nachtinsekten"], ["Tiefschlaf", "Braunes Rauschen, Wellen, eine Klangschale"], ["Stürmische Nacht", "Naher Donner, starker Regen"], ["Langsamer Zug", "Räder, ein Ventilator, ein Herzschlag"]],
+why: ["Das Leben ist laut. Dauerlärm und Benachrichtigungen halten den Körper in Alarmbereitschaft. Gleichmäßige, natürliche Klänge geben deiner Aufmerksamkeit etwas Sanftes, worauf sie ruhen kann.", "Ruhe ist ein Grundbedürfnis. Ein tiefer, gleichmäßiger Klang kann Geräusche überdecken, die dich aus dem Schlaf reißen, und vielen fällt das Abschalten damit leichter.", "Atmen ist das eine Werkzeug, das du immer dabeihast. Langsames Atmen wird mit mehr Ruhe verbunden, und der Kreis gibt dir ein Tempo vor.", "Eine Pause sollte nicht vom Geld abhängen. Jeder verdient ein paar stille Minuten, nicht nur wer dafür bezahlen kann."],
 goals: [
 { n: "Schlafen", s: "Einschlafen", w: "Ein tiefer, gleichmäßiger Klang überdeckt plötzliche Geräusche wie eine Tür oder ein Auto, die dich aus dem leichten Schlaf reißen können.", t: "Halte es leise und nutze den Timer, damit der Klang ausblendet, sobald du schläfst." },
 { n: "Kurzschlaf", s: "Eine kurze Pause", w: "Ein gleichmäßiger Klang verdeckt die Geräusche um dich herum, sodass du schneller einschläfst, und der Timer beendet ihn für dich.", t: "Der Klang blendet sanft aus, statt dich zu wecken. Stelle für den Schlaf zusätzlich einen Wecker am Handy." },
@@ -471,6 +507,7 @@ tips: [
 },
 hi: {
 ui: {
+nav_dev: "डेवलपर", tag: "शांति की कीमत नहीं होनी चाहिए। यह सबके लिए मुफ़्त है।", cust_t: "अपनी पसंद की आवाज़ बनाएं", cust_d: "आग, बारिश, लहरें और सुर अपने हिसाब से मिलाएं", cust_n: "{n} चल रहे हैं। बदलने के लिए टैप करें", q_new: "एक और विचार", d_h: "प्रणव आर्य द्वारा बनाया गया", d_p1: "नमस्ते, मैं प्रणव हूं, बर्लिन में रहने वाला फ़िल्ममेकर और क्रिएटिव डायरेक्टर। मैंने Hush इसलिए बनाया क्योंकि मैं इंटरनेट पर एक ऐसा शांत कोना चाहता था जो आपसे कुछ न मांगे।", d_h2: "Hush मुफ़्त क्यों है", d_p2: "ऐसे ऐप्स आमतौर पर बारिश की आवाज़ सुनने से पहले ही सब्सक्रिप्शन मांगते हैं। मुझे नहीं लगता कि शांति की कोई कीमत होनी चाहिए। Hush सबके लिए मुफ़्त है, न अकाउंट, न विज्ञापन, न पेवॉल।", d_p3: "मैं चाहता हूं कि लोग कहीं भी हों और उनकी जेब कैसी भी हो, वे खुद को आज़ाद और शांत महसूस करें। अगर यह पेज किसी एक इंसान को थोड़ा बेहतर सुलाने या एक मुश्किल शाम काटने में मदद करता है, तो इसका काम पूरा हुआ।", d_h3: "ये आवाज़ें क्यों मायने रखती हैं", d_h4: "नमस्ते कहें", d_p4: "कोई गड़बड़ी मिली, कोई आवाज़ चाहिए, या बताना चाहते हैं कि Hush से कैसे मदद मिली? मुझे सुनकर खुशी होगी।", d_site: "pranavarya.com देखें", d_priv: "निजता पर एक बात: सारी आवाज़ें आपके ब्राउज़र में ही बनती हैं और आप जो सुनते हैं वह रिकॉर्ड नहीं होता। यह जानने के लिए कि कितने लोग किन देशों से Hush इस्तेमाल करते हैं, साइट हर विज़िट का मोटा-मोटा शहर और देश दर्ज करती है। कोई नाम, ईमेल या ऑडियो नहीं।",
 nav_listen: "सुनें", nav_breathe: "साँस", nav_learn: "जानें",
 h1: "कमरे का शोर कम करें।",
 lede: "आग, पानी, हवा और स्थिर स्वर, सीधे आपके ब्राउज़र में बने।",
@@ -515,6 +552,7 @@ delta: ["डेल्टा बीट", "2.5 Hz बाइनॉरल बीट�
 alpha: ["अल्फ़ा बीट", "10 Hz बाइनॉरल बीट। हेडफ़ोन ज़रूरी।"], hz432: ["432 Hz", "एक स्थिर, गर्म गुंजन"], hz528: ["528 Hz", "एक स्थिर, थोड़ा तेज़ गुंजन"]
 },
 scenes: [["अलाव के पास", "अलाव, हल्की बारिश, हवा"], ["छत पर बारिश", "लगातार बारिश, दूर की गरज"], ["समुद्र किनारे रात", "लहरें, हवा, झींगुर"], ["जंगल का झरना", "पानी, हवा, रात के कीड़े"], ["गहरी नींद", "भूरा शोर, लहरें, एक कटोरा"], ["तूफ़ानी रात", "पास की गरज, तेज़ बारिश"], ["धीमी ट्रेन", "पहिये, एक पंखा, एक धड़कन"]],
+why: ["ज़िंदगी में शोर बहुत है। लगातार शोर और नोटिफ़िकेशन शरीर को सतर्क रखते हैं। स्थिर, प्राकृतिक आवाज़ें आपके ध्यान को आराम करने की एक कोमल जगह देती हैं।", "आराम एक बुनियादी ज़रूरत है। धीमी, एक-सी आवाज़ उन शोरों को ढक सकती है जो नींद तोड़ते हैं, और बहुत से लोगों को इससे सुकून पाना आसान लगता है।", "सांस वह एक साधन है जो हमेशा आपके साथ रहता है। धीमी सांस को ज़्यादा शांति से जोड़ा जाता है, और यह घेरा आपको चलने की गति देता है।", "ठहराव पैसों पर निर्भर नहीं होना चाहिए। हर किसी को कुछ शांत पल मिलने चाहिए, सिर्फ़ उन्हें नहीं जो इसके लिए कीमत दे सकें।"],
 goals: [
 { n: "नींद", s: "सो जाएँ", w: "धीमी, स्थिर आवाज़ दरवाज़े या गाड़ी जैसी अचानक आवाज़ों को ढक देती है, जो हल्की नींद से जगा सकती हैं।", t: "आवाज़ कम रखें और टाइमर लगाएँ ताकि आपके सोने के बाद आवाज़ धीरे-धीरे बंद हो जाए।" },
 { n: "झपकी", s: "थोड़ा आराम", w: "स्थिर आवाज़ आसपास के शोर को ढक देती है, जिससे नींद जल्दी आती है, और टाइमर उसे अपने आप बंद कर देता है।", t: "आवाज़ जगाने के बजाय धीरे से बंद होती है, इसलिए झपकी के लिए फ़ोन में अलार्म भी लगाएँ।" },
@@ -557,6 +595,108 @@ tips: [
 ]
 }
 };
+const QUOTES = [
+"Peace is not something you find. It is something you allow.",
+"You do not have to be fast. You only have to keep going.",
+"A quiet mind can carry more than a busy one.",
+"Begin where you are. That is the only place anyone can begin.",
+"Rest is not the opposite of progress. It is part of it.",
+"Small steps taken calmly still reach the top of the mountain.",
+"The storm outside does not have to become the storm inside.",
+"You have already survived every hard day so far.",
+"Breathe in what you need. Breathe out what you carry.",
+"Calm is a skill, and every slow breath is practice.",
+"Do the next kind thing for yourself.",
+"Nothing grows in a hurry. Not trees, not people, not peace.",
+"Let the day be as loud as it wants. Your breath can stay slow.",
+"You are allowed to take up quiet space.",
+"Courage is often just one more calm breath.",
+"Today does not need to be perfect to be worth it.",
+"Peace begins the moment you stop arguing with what is.",
+"Be gentle with yourself. You are doing something difficult.",
+"The best time to rest is before you break.",
+"Stillness is not empty. It is where you hear yourself.",
+"Start small, start now, start kindly.",
+"You can put the weight down for a moment. It will still be there, and so will you.",
+"Every sunrise is a free fresh start.",
+"Motivation gets you going. Calm keeps you going.",
+"Slow down enough to notice that you are already here.",
+"Not every thought needs an answer.",
+"Let go of the how and keep the why.",
+"A deep breath is a doorway you can always open.",
+"You are not behind. You are on your own path.",
+"Water does not rush, yet it carves the canyon.",
+"The quieter you become, the more you can hear.",
+"Choose progress over pressure.",
+"Your worth is not measured by your to-do list.",
+"Peace is a habit. Build it one quiet minute at a time.",
+"Fear shrinks when you breathe through it.",
+"Doing less, on purpose, is also a kind of strength.",
+"Hold your goals tightly and your worries loosely.",
+"A calm heart is a compass.",
+"Tomorrow is not asking for your tonight.",
+"Be the calm you wish the room had.",
+"Even the longest night ends in light.",
+"Trust the slow work. It is working.",
+"You do not need to earn your rest.",
+"What you practice grows. Practice peace.",
+"Let your shoulders fall. Let your jaw soften. Begin again.",
+"Strength can be quiet. It often is.",
+"One steady breath can change the next hour.",
+"Do not wait for calm weather to set out.",
+"The present moment is the only place peace has ever lived.",
+"Be proud of how far you have come, and patient with how far there is to go.",
+"You can be a work in progress and a masterpiece at the same time.",
+"Let the noise pass through like wind through leaves.",
+"Quiet confidence needs no audience.",
+"Your pace is the right pace.",
+"A little rest today makes room for a lot of strength tomorrow.",
+"The mind settles the way mud settles in still water.",
+"Keep showing up. Even gently counts.",
+"Peace is not the absence of problems. It is the presence of space.",
+"Sometimes the bravest thing is to sit still.",
+"You are more than the hardest thing you are facing.",
+"Light a small fire inside and let it warm the day.",
+"Growth is quiet before it is visible.",
+"Say yes to rest so you can say yes to what matters.",
+"Where attention goes, energy follows. Send it somewhere kind.",
+"You do not have to carry tomorrow today.",
+"Let your breath be the metronome of your day.",
+"No rush. The river reaches the sea anyway.",
+"A good day can start with a single slow exhale.",
+"What is meant for you will not require your panic.",
+"You are doing better than the voice in your head admits.",
+"Take the pause. It belongs to you.",
+"Each calm breath is a small vote for the person you want to be.",
+"Gentle is not weak. Gentle is steady.",
+"Ask less of the day and more of your kindness.",
+"The sky holds every storm and stays the sky.",
+"Be still long enough to feel the ground hold you.",
+"You were not made to be constantly on.",
+"Let the little things be little.",
+"Progress is progress, even when it is slow and quiet.",
+"There is room in you for both effort and ease.",
+"Release the grip. Keep the direction.",
+"The kindest voice you can use is your own.",
+"Discipline and peace can share the same room.",
+"Silence is a gift you can give yourself for free.",
+"Dream big, breathe slow.",
+"Every ending makes room for something softer.",
+"When everything feels fast, be the still point.",
+"You have more time than your worry says.",
+"Do what you can, then let the rest be.",
+"Your calm can become someone else's shelter.",
+"Moving forward does not always look like moving fast.",
+"The most powerful reset is a long, slow breath.",
+"You are allowed to start over as many times as you need.",
+"Peace is not a prize for the perfect. It is a gift for the willing.",
+"Plant one good habit today and let time water it.",
+"Listen to the rain. It has nowhere to be, and neither do you right now.",
+"Hope is a quiet voice that says try once more.",
+"Be patient. Mountains were once pebbles that kept going.",
+"The softest sounds often heal the most.",
+"You deserve peace, and nothing needs to be paid for it."
+];
 let lang = store.get('lang');
 if (!I18N[lang]) lang = /^de/i.test(navigator.language || '') ? 'de' : /^hi/i.test(navigator.language || '') ? 'hi' : 'en';
 const D = () => I18N[lang];
@@ -565,7 +705,6 @@ let s = D().ui[k]; if (s == null) s = I18N.en.ui[k] || k;
 if (v) for (const n in v) s = s.split('{' + n + '}').join(v[n]);
 return s;
 };
-/* ---------- audio engine ---------- */
 let ctx, master, analyser, bufs, ka = null;
 const state = { master: 0.8 };
 let paused = false, session = null, cycleT0 = 0;
@@ -617,7 +756,6 @@ bufs = { white: makeBuf('white'), pink: makeBuf('pink'), brown: makeBuf('brown')
 keepAlive();
 }
 const masterAmp = () => Math.pow(state.master, 1.4);
-/* small toolkit for building sounds */
 const filt = (type, f, q = 0.7) => { const n = ctx.createBiquadFilter(); n.type = type; n.frequency.value = f; n.Q.value = q; return n; };
 const gain = v => { const g = ctx.createGain(); g.gain.value = v; return g; };
 function newRig() {
@@ -681,7 +819,6 @@ const o = r.osc('sine', fr), g = r.node(gain(a)); o.connect(g); g.connect(mix);
 lfo(r, .08, .2, mix.gain);
 mix.connect(out);
 };
-/* extra helpers for the newer sounds */
 const ping = (out, f, dur, a) => {
 const t = ctx.currentTime, o = ctx.createOscillator(), g = gain(0);
 o.type = 'sine'; o.frequency.value = f;
@@ -721,7 +858,6 @@ g.gain.linearRampToValueAtTime(0, tt + 2);
 s.start(t, Math.random() * 3, tt - t + 2.1);
 setTimeout(() => { try { g1.disconnect(); hp.disconnect(); g.disconnect(); f.disconnect(); } catch (e) {} }, (tt - t + 3) * 1000);
 }
-/* ---------- the sounds ---------- */
 const GROUPS = [
 { id: 'fire',  name: 'Fire',  blurb: 'Warm and close.',                                         hue: '#F2A065' },
 { id: 'water', name: 'Water', blurb: 'Soft, steady, moving.',                                   hue: '#6DB9CC' },
@@ -881,7 +1017,6 @@ chain(r, r.src('pink'), filt('bandpass', 1400, .5), gain(.1), out);
 const o = r.osc('sine', 118), og = r.node(gain(.03)); o.connect(og); og.connect(out);
 } }
 ];
-/* ---------- media session, keep-alive, wake lock ---------- */
 function silentWav() {
 const n = 8000, b = new ArrayBuffer(44 + n), v = new DataView(b);
 const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
@@ -924,7 +1059,6 @@ wl.addEventListener('release', () => { wl = null; });
 } catch (e) { wl = null; }
 }
 document.addEventListener('visibilitychange', () => { if (!document.hidden) applyWake(); });
-/* ---------- turning sounds on and off ---------- */
 const nm = s => D().snd[s.id][0];
 const hueOf = s => GROUPS.find(g => g.id === s.group).hue;
 const amp = s => Math.pow(s.vol, 1.6) * s.k;
@@ -965,10 +1099,11 @@ function resumeAudio() {
 if (!paused) return;
 paused = false; ctx.resume(); if (ka) ka.play().catch(() => {}); refresh();
 }
-let lastMix = null;
-function applyMix(mix) {
-lastMix = mix;
+let lastMix = null, lastGoal = -1, goalIdx = -1;
+function applyMix(mix, gi = -1) {
+lastMix = mix; lastGoal = gi; goalIdx = gi;
 paused = false;
+if (ka) ka.play().catch(() => {});
 ensure();
 sounds.forEach(s => {
 if (mix[s.id] != null) {
@@ -998,7 +1133,6 @@ const GOALMIX = [
 ];
 const GOALTIMER = [30, 20, 20, 15, 20, 0, 0, 0, 30, 0, 0, 0, 0];
 const GOALSESSION = [1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
-/* ---------- timer ---------- */
 const timer = { end: 0, total: 1, id: 0, fading: false };
 const timerPop = $('#timerPop'), timerBtn = $('#timerBtn'), timerLbl = $('#timerLbl');
 const timerChips = [...timerPop.querySelectorAll('[data-min]')];
@@ -1038,13 +1172,12 @@ timerPop.hidden = !open; timerBtn.setAttribute('aria-expanded', open);
 });
 document.addEventListener('click', e => { if (!timerPop.hidden && !timerPop.contains(e.target) && e.target !== timerBtn) closePop(); });
 function stopAll() {
-sounds.forEach(turnOff); clearTimer(); session = null; paused = false;
+sounds.forEach(turnOff); clearTimer(); session = null; paused = false; goalIdx = -1;
 if (ka) ka.pause();
 if (ctx && ctx.state === 'suspended') ctx.resume();
-if (sleeping) exitSleep();
+if (sleeping) exitSleep(false);
 refresh();
 }
-/* ---------- breathing patterns ---------- */
 const PATS = {
 calm: [['in', 7, 0, 1], ['hold', 5, 1, 1], ['out', 7, 1, 0]],
 box:  [['in', 4, 0, 1], ['hold', 4, 1, 1], ['out', 4, 1, 0], ['hold', 4, 0, 0]],
@@ -1056,7 +1189,6 @@ sigh: [['in', 2, 0, .7], ['in2', 1, .7, 1], ['out', 6, 1, 0]]
 const PAT_ORDER = ['calm', 'box', 'r478', 'even', 'long', 'sigh'];
 let patKey = store.get('pat'); if (!PATS[patKey]) patKey = 'calm';
 const WORDKEY = { 'in': 'w_in', hold: 'w_hold', out: 'w_out', in2: 'w_in2' };
-/* ---------- sessions, guided breathing ---------- */
 const SESSION_LEN = 180;
 function coachLine(el) {
 const at = [0, 20, 70, 130, 168], lines = D().coach;
@@ -1071,27 +1203,26 @@ session = { start: Date.now() };
 if (route !== 'listen' && route !== 'breathe') go('breathe');
 window.scrollTo({ top: 0, behavior: reduce.matches ? 'auto' : 'smooth' });
 }
-/* ---------- routes ---------- */
 let route = 'listen';
-const VIEWS = { listen: $('#v-listen'), breathe: $('#v-breathe'), learn: $('#v-learn') };
+const VIEWS = { listen: $('#v-listen'), breathe: $('#v-breathe'), learn: $('#v-learn'), developer: $('#v-developer') };
 function go(r) { location.hash = r === 'listen' ? '#/' : '#/' + r; }
 function applyRoute(first) {
 const h = location.hash.replace(/^#\/?/, '');
 route = VIEWS[h] ? h : 'listen';
 for (const k in VIEWS) VIEWS[k].hidden = k !== route;
-document.body.classList.remove('route-listen', 'route-breathe', 'route-learn');
+document.body.classList.remove('route-listen', 'route-breathe', 'route-learn', 'route-developer');
 document.body.classList.add('route-' + route);
 document.querySelectorAll('.nav a').forEach(a => {
 if (a.dataset.route === route) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
 });
+document.title = route === 'developer' ? T('d_h') + ' | Hush' : T('title');
 if (!first) { window.scrollTo({ top: 0, behavior: 'auto' }); $('#main').focus({ preventScroll: true }); }
 }
 addEventListener('hashchange', () => applyRoute(false));
-/* ---------- build the pages ---------- */
 const dialog = $('#sheet');
 function renderStatic() {
 document.documentElement.lang = lang;
-document.title = T('title');
+document.title = route === 'developer' ? T('d_h') + ' | Hush' : T('title');
 document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = T(el.dataset.i18n); });
 document.querySelectorAll('[data-i18n-aria]').forEach(el => { el.setAttribute('aria-label', T(el.dataset.i18nAria)); });
 document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.lang === lang));
@@ -1099,6 +1230,7 @@ $('#playBtn').setAttribute('aria-label', T(paused || !anyOn() ? 'play' : 'pause'
 timerBtn.setAttribute('aria-label', T('timer')); $('#timerPop').setAttribute('aria-label', T('timer'));
 $('#sleepBtn').setAttribute('aria-label', T('sleep')); $('#sleepBtn').title = T('sleep_hint');
 $('#sheetClose').setAttribute('aria-label', T('close'));
+$('#qNew').textContent = T('q_new');
 timerChips.forEach(b => { if (b.dataset.min !== '0') b.textContent = T('min', { n: b.dataset.min }); });
 $('#wakeBtn').hidden = !('wakeLock' in navigator);
 }
@@ -1119,14 +1251,14 @@ sounds.filter(s => s.group === g.id).forEach(s => {
 const b = document.createElement('button');
 b.type = 'button'; b.className = 'snd'; b.style.setProperty('--hue', g.hue);
 b.innerHTML = '<i></i><span></span>'; b.querySelector('span').textContent = nm(s); b.title = D().snd[s.id][1];
-b.addEventListener('click', () => s.on ? turnOff(s) : turnOn(s));
+b.addEventListener('click', () => { goalIdx = -1; s.on ? turnOff(s) : turnOn(s); });
 s.chip = b; box.append(b);
 const row = document.createElement('div'); row.className = 'prow'; row.style.setProperty('--hue', g.hue);
 row.innerHTML = '<span></span><input type="range" min="0" max="100">';
 row.querySelector('span').textContent = nm(s);
 const inp = row.querySelector('input'); inp.setAttribute('aria-label', nm(s));
 inp.value = s.vol * 100; inp.style.setProperty('--p', (s.vol * 100) + '%');
-inp.addEventListener('input', () => { inp.style.setProperty('--p', inp.value + '%'); setVol(s, inp.value / 100); });
+inp.addEventListener('input', () => { goalIdx = -1; inp.style.setProperty('--p', inp.value + '%'); setVol(s, inp.value / 100); });
 s.row = row; s.inp = inp; row.style.margin = '.2rem 0'; pl.append(row);
 });
 all.append(h, box);
@@ -1140,17 +1272,98 @@ s.row.hidden = !s.on;
 s.chip.setAttribute('aria-pressed', s.on);
 if (s.on) { s.inp.value = s.vol * 100; s.inp.style.setProperty('--p', (s.vol * 100) + '%'); }
 }
-const goalBox = $('#goals'), detail = $('#detail');
-let goalIdx = -1;
-function renderGoals() {
-goalBox.innerHTML = '';
-D().goals.forEach((g, i) => {
-const b = document.createElement('button');
-b.type = 'button'; b.className = 'pill'; b.textContent = g.n; b.title = g.s;
-b.setAttribute('aria-pressed', i === goalIdx);
-b.addEventListener('click', () => { goalIdx = i; applyMix(GOALMIX[i]); renderGoals(); detail.scrollIntoView({ block: 'nearest', behavior: reduce.matches ? 'auto' : 'smooth' }); });
-goalBox.append(b);
+const cardBox = $('#cards');
+const detail = document.createElement('div'); detail.className = 'detail'; detail.setAttribute('aria-live', 'polite');
+const TILE_C = { fire: ['#3b1f12', '#140e11'], rain: ['#1d3340', '#0e1a22'], sea: ['#17394a', '#0c1a24'], stream: ['#1b3a30', '#0d1b1a'], sleep: ['#2a2250', '#0e1020'], bowl: ['#2d2454', '#120f26'], wind: ['#27393f', '#0e1a20'], train: ['#2c2a3a', '#0e0f18'] };
+const TILE_N = { fire: 22, rain: 34, sea: 0, stream: 12, sleep: 26, bowl: 0, wind: 14, train: 10 };
+const SCENE_OF = ['sleep', 'wind', 'bowl', 'stream', 'sea', 'rain', 'fire', 'fire', 'sea', 'sleep', 'rain', 'wind', 'train'];
+const SPEED = { fire: 3, rain: 9, stream: 1, sleep: .5, wind: 1.4, train: 1.2 };
+let tiles = [], tileRO = null, tileIO = null;
+function tdot(g, px, py, r, col, a) {
+if (a <= .01) return;
+g.fillStyle = 'rgba(' + col + ',' + (a * .25) + ')'; g.beginPath(); g.arc(px, py, r * 3, 0, TAU); g.fill();
+g.fillStyle = 'rgba(' + col + ',' + a + ')'; g.beginPath(); g.arc(px, py, r, 0, TAU); g.fill();
+}
+function drawTile(tl, t) {
+const g = tl.g, w = tl.w, h = tl.h, k = tl.k;
+if (!w || !h) return;
+const bg = g.createLinearGradient(0, 0, 0, h); bg.addColorStop(0, tl.c0); bg.addColorStop(1, tl.c1);
+g.fillStyle = bg; g.fillRect(0, 0, w, h);
+const m = reduce.matches ? 3 : t, sc = tl.scene;
+if (sc === 'fire') {
+const gr = g.createRadialGradient(w * .35, h * 1.15, 0, w * .35, h * 1.15, h * 1.2);
+gr.addColorStop(0, 'rgba(242,160,101,' + (.38 + .08 * Math.sin(m * 7)) + ')'); gr.addColorStop(1, 'rgba(242,160,101,0)');
+g.fillStyle = gr; g.fillRect(0, 0, w, h);
+}
+if (sc === 'sea') {
+for (let l = 0; l < 3; l++) {
+g.beginPath(); g.moveTo(0, h);
+for (let xx = 0; xx <= w + 8 * k; xx += 8 * k) g.lineTo(xx, h * (.5 + .13 * l) + Math.sin(xx / w * TAU * (1.2 + l * .5) + m * (.8 + l * .3) + l) * 5 * k);
+g.lineTo(w, h); g.closePath(); g.fillStyle = 'rgba(109,185,204,' + (.16 + .08 * l) + ')'; g.fill();
+}
+}
+if (sc === 'bowl') {
+for (let l = 0; l < 3; l++) {
+const u = (m * .16 + l / 3) % 1;
+g.strokeStyle = 'rgba(185,168,236,' + (.5 * Math.pow(1 - u, 2)) + ')'; g.lineWidth = 1.5 * k;
+g.beginPath(); g.arc(w * .5, h * .42, h * (.08 + .6 * u), 0, TAU); g.stroke();
+}
+tdot(g, w * .5, h * .42, 2.2 * k, '230,214,255', .8);
+}
+if (sc === 'train') {
+g.strokeStyle = 'rgba(213,224,222,.14)'; g.lineWidth = k;
+g.beginPath(); g.moveTo(0, h * .72); g.lineTo(w, h * .72); g.stroke();
+}
+const sp = SPEED[sc] || 1;
+tl.ps.forEach((p, i) => {
+const u = (p.o + m * p.v * sp) % 1;
+if (sc === 'fire') tdot(g, p.x * w + Math.sin(m * 1.5 + p.o * 9) * 6 * k, h * (1.05 - u * 1.1), p.r * k, '242,160,101', Math.sin(Math.PI * u) * .9);
+else if (sc === 'rain') {
+const px = p.x * w - u * 16 * k, py = (u * 1.1 - .05) * h;
+g.strokeStyle = 'rgba(160,205,225,.45)'; g.lineWidth = k; g.beginPath(); g.moveTo(px, py); g.lineTo(px - 2 * k, py - 9 * k); g.stroke();
+} else if (sc === 'stream') {
+if (i < 2) {
+const ru = (p.o + m * .25) % 1;
+g.strokeStyle = 'rgba(109,185,204,' + (.45 * (1 - ru)) + ')'; g.lineWidth = k;
+g.beginPath(); g.ellipse(p.x * w, h * (.55 + .3 * p.y), 28 * k * ru, 9 * k * ru, 0, 0, TAU); g.stroke();
+} else tdot(g, p.x * w + Math.sin(m * .7 + p.o * 9) * 8 * k, p.y * h * .8 + Math.cos(m * .5 + p.o * 7) * 5 * k, p.r * k * .8, '196,226,130', Math.pow(Math.max(0, Math.sin(m * 1.3 + p.o * 20)), 3));
+} else if (sc === 'sleep') {
+if (i % 4 === 0) tdot(g, p.x * w, h * (1.05 - u * 1.1), p.r * 1.4 * k, '185,168,236', Math.sin(Math.PI * u) * .6);
+else tdot(g, p.x * w, p.y * h * .9, p.r * .7 * k, '230,238,240', .25 + .5 * (.5 + .5 * Math.sin(m * .8 + p.o * 20)));
+} else if (sc === 'wind') {
+const px = ((u * 1.3 - .15) * w), py = p.y * h * .8 + h * .08 + Math.sin(m + p.o * 9) * 4 * k;
+g.strokeStyle = 'rgba(213,224,222,' + (.35 * Math.sin(Math.PI * u)) + ')'; g.lineWidth = k;
+g.beginPath(); g.moveTo(px - 26 * k, py); g.quadraticCurveTo(px - 12 * k, py - 5 * k, px, py); g.stroke();
+} else if (sc === 'train') {
+const px = w * (1.1 - ((p.o + m * p.v * 1.2) % 1) * 1.2);
+tdot(g, px, h * (.3 + .4 * p.y), (1 + p.r * .5) * k, '242,200,120', .55);
+}
 });
+}
+function tileFrame(ms) {
+if (route === 'listen' && !sleeping && !document.hidden && ms - tileFrame.last > 33) {
+tileFrame.last = ms;
+for (const tl of tiles) if (tl.vis) drawTile(tl, ms / 1000);
+}
+requestAnimationFrame(tileFrame);
+}
+tileFrame.last = 0;
+function addTile(btn, scene) {
+const tc = btn.querySelector('canvas');
+const tl = { g: tc.getContext('2d'), scene, w: 0, h: 0, k: 1, c0: TILE_C[scene][0], c1: TILE_C[scene][1], ps: [], vis: true, el: tc };
+for (let i = 0; i < TILE_N[scene]; i++) tl.ps.push({ x: Math.random(), y: Math.random(), o: Math.random(), v: .05 + Math.random() * .1, r: .6 + Math.random() * 1.4 });
+tc._tl = tl; tileRO.observe(tc); tileIO.observe(tc);
+tiles.push(tl);
+if (reduce.matches) setTimeout(() => drawTile(tl, 3), 60);
+}
+function placeDetail() {
+if (goalIdx < 0) { detail.remove(); return; }
+const cards = [...cardBox.querySelectorAll('.gcard')];
+const cols = getComputedStyle(cardBox).gridTemplateColumns.split(' ').length || 1;
+const at = Math.min(cards.length - 1, (Math.floor(goalIdx / cols) + 1) * cols - 1);
+cards[at].after(detail);
+}
+function fillDetail() {
 detail.innerHTML = '';
 if (goalIdx < 0) return;
 const g = D().goals[goalIdx], names = Object.keys(GOALMIX[goalIdx]).map(id => nm(byId[id])).join(', ');
@@ -1167,6 +1380,55 @@ if (GOALSESSION[goalIdx]) {
 const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = T('guided');
 b.addEventListener('click', () => startSession(false)); acts.append(b);
 }
+}
+let shownGoal = -2;
+function syncCards() {
+const on = anyOn() && goalIdx >= 0;
+if (!anyOn()) goalIdx = -1;
+cardBox.querySelectorAll('.gcard').forEach((b, i) => b.setAttribute('aria-pressed', i === goalIdx && on));
+const cb = $('#custBtn');
+if (cb) {
+const n = sounds.filter(s => s.on).length;
+cb.querySelector('small').textContent = n ? T('cust_n', { n }) : T('cust_d');
+}
+if (shownGoal !== goalIdx) { shownGoal = goalIdx; fillDetail(); placeDetail(); }
+}
+function openSheet() { if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', ''); }
+function toggleGoal(i) {
+if (goalIdx === i && anyOn()) {
+if (paused) { resumeAudio(); return; }
+stopAll(); return;
+}
+applyMix(GOALMIX[i], i);
+}
+function renderGoals() {
+if (tileRO) tileRO.disconnect(); if (tileIO) tileIO.disconnect();
+tiles = [];
+tileRO = new ResizeObserver(es => es.forEach(en => {
+const tl = en.target._tl; if (!tl) return;
+const r = en.target.getBoundingClientRect();
+tl.k = Math.min(window.devicePixelRatio || 1, 2);
+tl.w = en.target.width = Math.round(r.width * tl.k); tl.h = en.target.height = Math.round(r.height * tl.k);
+if (reduce.matches) drawTile(tl, 3);
+placeDetail();
+}));
+tileIO = new IntersectionObserver(es => es.forEach(en => { if (en.target._tl) en.target._tl.vis = en.isIntersecting; }));
+detail.remove(); cardBox.innerHTML = '';
+const cu = document.createElement('button'); cu.type = 'button'; cu.className = 'cust'; cu.id = 'custBtn'; cu.setAttribute('aria-haspopup', 'dialog');
+cu.innerHTML = '<span class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10M4 12h4M12 12h8"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/><circle cx="10" cy="12" r="2"/></svg></span><span><b></b><small></small></span>';
+cu.querySelector('b').textContent = T('cust_t');
+cu.addEventListener('click', openSheet);
+cardBox.append(cu);
+D().goals.forEach((g, i) => {
+const b = document.createElement('button');
+b.type = 'button'; b.className = 'gcard'; b.setAttribute('aria-pressed', 'false');
+b.innerHTML = '<canvas aria-hidden="true"></canvas><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="gn"></span><span class="gs"></span>';
+b.querySelector('.gn').textContent = g.n; b.querySelector('.gs').textContent = g.s;
+b.addEventListener('click', () => toggleGoal(i));
+cardBox.append(b);
+addTile(b, SCENE_OF[i]);
+});
+shownGoal = -2; syncCards();
 }
 function renderBreathe() {
 const box = $('#patterns'); box.innerHTML = '';
@@ -1209,15 +1471,60 @@ box.append(d);
 const tips = $('#tips'); tips.innerHTML = '';
 D().tips.forEach(([b, r]) => { const li = document.createElement('li'); const st = document.createElement('strong'); st.textContent = b + ' '; li.append(st, document.createTextNode(r)); tips.append(li); });
 }
+function renderDev() {
+const ul = $('#whyList'); ul.innerHTML = '';
+D().why.forEach(s => { const li = document.createElement('li'); li.textContent = s; ul.append(li); });
+}
+let qOrder = [], qPos = 0, qTimer = 0;
+function shuffleQuotes() {
+qOrder = QUOTES.map((_, i) => i);
+for (let i = qOrder.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [qOrder[i], qOrder[j]] = [qOrder[j], qOrder[i]]; }
+qPos = 0;
+}
+shuffleQuotes();
+const qText = $('#qText');
+function showQuote(instant) {
+if (qPos >= qOrder.length) shuffleQuotes();
+const txt = QUOTES[qOrder[qPos++]];
+clearTimeout(qTimer);
+const set = () => { qText.textContent = txt; qText.classList.remove('out'); };
+if (instant || reduce.matches) set(); else { qText.classList.add('out'); setTimeout(set, 450); }
+qTimer = setTimeout(() => showQuote(false), 14000);
+}
+$('#qNew').addEventListener('click', () => showQuote(false));
+(function visitPing() {
+try {
+if (!/\.github\.io$/.test(location.hostname)) return;
+if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl) return;
+if (sessionStorage.getItem('hush.pinged')) return;
+sessionStorage.setItem('hush.pinged', '1');
+} catch (e) { return; }
+const HOOK = 'https://discord.com/api/webhooks/1561881923381366916/R5pc3BO7_OwLMHBHwHaxuXxsDSAZZdsgcTY9Hwjhs8oFa93hxpdkwyYPcMa_0G9wAHZe';
+const send = geo => {
+const ua = navigator.userAgent, dev = /Mobi|Android|iPhone/i.test(ua) ? 'Mobile' : /iPad|Tablet/i.test(ua) ? 'Tablet' : 'Desktop';
+const place = geo ? [geo.city, geo.region, geo.country].filter(Boolean).join(', ') : 'Unknown';
+const body = { username: 'Hush visits', embeds: [{ title: 'New visit to Hush', color: 7125452, fields: [
+{ name: 'Location', value: place || 'Unknown', inline: false },
+{ name: 'Device', value: dev + ', ' + screen.width + 'x' + screen.height, inline: true },
+{ name: 'Language', value: navigator.language || 'n/a', inline: true },
+{ name: 'Time zone', value: (Intl.DateTimeFormat().resolvedOptions().timeZone || 'n/a'), inline: true },
+{ name: 'Came from', value: (document.referrer || 'Direct').slice(0, 200), inline: false }
+], timestamp: new Date().toISOString() }] };
+fetch(HOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), keepalive: true }).catch(() => {});
+};
+const ctl = typeof AbortController === 'function' ? new AbortController() : null;
+if (ctl) setTimeout(() => ctl.abort(), 4000);
+fetch('https://ipwho.is/?fields=success,city,region,country', ctl ? { signal: ctl.signal } : {})
+.then(r => r.json()).then(j => send(j && j.success ? j : null)).catch(() => send(null));
+})();
 function renderAll() {
-renderStatic(); renderSheet(); renderGoals(); renderBreathe(); renderLearn();
+renderStatic(); renderSheet(); renderGoals(); renderBreathe(); renderLearn(); renderDev(); showQuote(true);
 lastWord = ''; lastHint = ''; updateSession();
 }
 document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => { lang = b.dataset.lang; store.set('lang', lang); renderAll(); }));
-/* ---------- dock ---------- */
 const playBtn = $('#playBtn');
 playBtn.addEventListener('click', () => {
-if (!anyOn()) applyMix(lastMix || DEFAULT_MIX);
+if (!anyOn()) applyMix(lastMix || DEFAULT_MIX, lastMix ? lastGoal : -1);
 else if (paused) resumeAudio(); else pauseAudio();
 });
 const dockMaster = $('#master'), sheetMaster = $('#master2');
@@ -1230,42 +1537,42 @@ dockMaster.addEventListener('input', () => setMaster(+dockMaster.value));
 sheetMaster.addEventListener('input', () => setMaster(+sheetMaster.value));
 setMaster(80);
 $('#stopAll').addEventListener('click', stopAll);
-$('#soundsBtn').addEventListener('click', () => { if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', ''); });
 $('#sheetClose').addEventListener('click', () => dialog.close());
 dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
 const wakeBtn = $('#wakeBtn');
 wakeBtn.addEventListener('click', () => { wakePref = !wakePref; wakeBtn.setAttribute('aria-pressed', wakePref); applyWake(); });
-/* sleep mode */
 let sleeping = false;
 function enterSleep() {
 if (sleeping) return;
 if (dialog.open) dialog.close();
-if (!anyOn()) applyMix(SLEEP_MIX);
+if (!anyOn()) applyMix(SLEEP_MIX); else if (paused) resumeAudio();
 if (!timer.end) startTimer(30);
 sleeping = true; document.body.classList.add('sleep');
 applyWake(); $('#sleepExit').focus({ preventScroll: true });
 window.scrollTo(0, 0);
 }
-function exitSleep() {
-sleeping = false; document.body.classList.remove('sleep'); applyWake();
+function exitSleep(stop = true) {
+if (!sleeping) return;
+sleeping = false; document.body.classList.remove('sleep');
+if (stop) stopAll();
+applyWake();
 $('#sleepBtn').focus({ preventScroll: true });
 }
 $('#sleepBtn').addEventListener('click', enterSleep);
-$('#sleepExit').addEventListener('click', exitSleep);
-addEventListener('keydown', e => { if (e.key === 'Escape' && sleeping) exitSleep(); });
-/* ---------- ui state ---------- */
+$('#sleepExit').addEventListener('click', () => exitSleep(true));
+addEventListener('keydown', e => { if (e.key === 'Escape' && sleeping) exitSleep(true); });
 const status = $('#status');
 function refresh() {
 const n = sounds.filter(s => s.on).length, on = n > 0 && !paused;
 document.body.classList.toggle('playing', n > 0);
-$('#icoPlay').hidden = on; $('#icoPause').hidden = !on;
+$('#icoPlay').toggleAttribute('hidden', on); $('#icoPause').toggleAttribute('hidden', !on);
+document.body.classList.toggle('paused', paused);
+syncCards();
 playBtn.setAttribute('aria-label', T(on ? 'pause' : 'play'));
-const cnt = $('#cnt'); cnt.hidden = n === 0; cnt.textContent = n;
 const nm0 = $('#noneMsg'); if (nm0) { nm0.textContent = T('none'); nm0.hidden = n > 0; }
 status.textContent = n === 0 ? T('n_zero') : n === 1 ? T('n_one') : T('n_many', { n });
 updateSession();
 }
-/* ---------- the orb ---------- */
 const cv = $('#orb'), c = cv.getContext('2d'), capWord = $('#capWord'), capNum = $('#capNum');
 const orbWrap = $('#orbWrap'), hint = $('#orbHint');
 let dpr = 1, W = 0, H = 0, lastWord = '', lastNum = '', lastHint = '';
@@ -1279,7 +1586,7 @@ new ResizeObserver(fit).observe(cv); fit();
 const startFromOrb = () => {
 if (sleeping) return;
 if (anyOn() || session) return;
-if (route === 'breathe') startSession(false); else applyMix(lastMix || DEFAULT_MIX);
+if (route === 'breathe') startSession(false); else applyMix(lastMix || DEFAULT_MIX, lastMix ? lastGoal : -1);
 };
 orbWrap.addEventListener('click', startFromOrb);
 orbWrap.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startFromOrb(); } });
@@ -1479,11 +1786,11 @@ x.fillStyle = 'rgba(200,215,255,' + (.12 * Math.pow(1 - fa / 1.4, 2) * (fa < .15
 requestAnimationFrame(fxFrame);
 }
 const AUR = [['109,185,204', .25, .2, 0], ['185,168,236', .7, .3, 2], ['242,160,101', .5, .85, 4]];
-/* ---------- go ---------- */
 renderAll();
 applyRoute(true);
 requestAnimationFrame(frame);
 requestAnimationFrame(fxFrame);
+requestAnimationFrame(tileFrame);
 })();
 </script>
 </body>
