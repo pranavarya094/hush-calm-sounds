@@ -31,6 +31,8 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 :focus-visible{outline:2px solid var(--mist);outline-offset:3px;border-radius:6px}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.top,main,.foot{position:relative;z-index:1}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
 .top{max-width:1120px;margin:0 auto;padding:1.5rem 1.25rem 0}
@@ -69,6 +71,11 @@ h1{
 }
 .cap-num{font:400 clamp(1.2rem,8cqw,2.1rem)/1 var(--serif);font-variant-numeric:tabular-nums;font-variation-settings:"SOFT" 100}
 .cap-num:empty{display:none}
+.orbhint{
+  position:absolute;left:0;right:0;bottom:3%;text-align:center;pointer-events:none;
+  color:var(--dim);font-size:.9rem;transition:opacity .8s;
+}
+.orbhint.off{opacity:0}
 
 .mixer{max-width:1120px;margin:0 auto;padding:0 1.25rem}
 .group{display:grid;gap:1rem;border-top:1px solid var(--line);padding:2rem 0}
@@ -105,14 +112,27 @@ h1{
   width:0;height:0;margin-left:3px;
   border-left:11px solid currentColor;border-top:7px solid transparent;border-bottom:7px solid transparent;
 }
-.tog .bars{display:none;gap:3px;align-items:flex-end;height:14px}
-.tog .bars i{width:3px;height:100%;background:currentColor;transform-origin:bottom;animation:eq 1.2s ease-in-out infinite}
-.tog .bars i:nth-child(2){animation-delay:-.4s}
-.tog .bars i:nth-child(3){animation-delay:-.8s}
+.gl{display:none;width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tog[aria-pressed=true]{background:var(--hue);color:var(--night)}
 .tog[aria-pressed=true] .play{display:none}
-.tog[aria-pressed=true] .bars{display:flex}
-@keyframes eq{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+.tog[aria-pressed=true] .gl{display:block}
+.gl-fire path{fill:currentColor;stroke:none;transform-origin:12px 21px;animation:flick 1.1s ease-in-out infinite}
+@keyframes flick{0%,100%{transform:scale(1,1) skewX(0)}25%{transform:scale(.92,1.08) skewX(-5deg)}50%{transform:scale(1.04,.94) skewX(3deg)}75%{transform:scale(.95,1.05) skewX(-2deg)}}
+.gl-water path{animation:slide 2.4s linear infinite}
+@keyframes slide{to{transform:translateX(12px)}}
+.gl-air path{stroke-dasharray:55 45;animation:gust 2.6s linear infinite}
+.gl-air path:nth-child(2){animation-delay:-.9s}
+.gl-air path:nth-child(3){animation-delay:-1.7s}
+@keyframes gust{to{stroke-dashoffset:-100}}
+.gl-noise circle{fill:currentColor;stroke:none;animation:twinkle 1.3s ease-in-out infinite}
+.gl-noise circle:nth-child(3n+2){animation-delay:-.4s}
+.gl-noise circle:nth-child(3n){animation-delay:-.9s}
+.gl-noise circle:nth-child(4n+1){animation-duration:.9s}
+@keyframes twinkle{0%,100%{opacity:.2}50%{opacity:1}}
+.gl-tones circle{transform-origin:12px 12px;animation:pulse 2.4s ease-out infinite;opacity:0}
+.gl-tones circle:nth-child(2){animation-delay:-.8s}
+.gl-tones circle:nth-child(3){animation-delay:-1.6s}
+@keyframes pulse{0%{transform:scale(.2);opacity:.9}100%{transform:scale(1);opacity:0}}
 
 input[type=range]{
   -webkit-appearance:none;appearance:none;width:100%;height:28px;background:transparent;cursor:pointer;
@@ -166,12 +186,14 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
   #left:empty{display:none}
 }
 @media(prefers-reduced-motion:reduce){
-  .tog .bars i{animation:none}
+  .gl *{animation:none!important;opacity:1!important}
   .dock{transition:none}
+  .orbhint{transition:none}
 }
 </style>
 </head>
 <body>
+<canvas id="fx" aria-hidden="true"></canvas>
 
 <header class="top"><span class="mark">Hush</span></header>
 
@@ -186,7 +208,8 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
     </div>
     <div class="orbwrap">
       <canvas id="orb" aria-hidden="true"></canvas>
-      <p class="cap" aria-hidden="true"><span id="capWord">Pick a sound to begin</span><span class="cap-num" id="capNum"></span></p>
+      <p class="cap" aria-hidden="true"><span id="capWord">Breathe in</span><span class="cap-num" id="capNum"></span></p>
+      <p class="orbhint" id="orbHint">Breathe with the circle. Pick a sound when you are ready.</p>
     </div>
   </section>
 
@@ -354,6 +377,8 @@ const GROUPS = [
   { id: 'tones', name: 'Tones', blurb: 'Pure pitches for winding down. Binaural beats need headphones.', hue: '#B9A8EC' }
 ];
 
+const ev = { flashT: -99, bowlT: -99 };
+const now = () => performance.now() / 1000;
 const sounds = [
   { id: 'campfire', group: 'fire', name: 'Campfire', note: 'A low roar with snapping logs', def: .5, k: 1,
     build(r, out) {
@@ -403,6 +428,7 @@ const sounds = [
   { id: 'thunder', group: 'air', name: 'Distant thunder', note: 'Far-off rumbles, every so often', def: .5, k: 1,
     build(r, out) {
       r.every(() => {
+        setTimeout(() => { ev.flashT = now(); }, 900 + Math.random() * 600);
         const t = ctx.currentTime;
         const s = ctx.createBufferSource(); s.buffer = bufs.brown;
         const f = filt('lowpass', 160), g = gain(0);
@@ -438,6 +464,7 @@ const sounds = [
   { id: 'bowl', group: 'tones', name: 'Singing bowl', note: 'A struck bowl, ringing out every ten seconds or so', def: .45, k: 1,
     build(r, out) {
       r.every(() => {
+        ev.bowlT = now();
         const t = ctx.currentTime, base = [196, 220, 246.9, 261.6][Math.floor(Math.random() * 4)];
         [[1, .55, 11], [2.76, .28, 8], [5.4, .12, 5]].forEach(([m, a, d]) => {
           [0, 1.4].forEach(det => {
@@ -494,6 +521,13 @@ function setVol(s, v) {
 function paint(s) { s.inp.style.setProperty('--p', (s.vol * 100) + '%'); }
 
 /* ---------- build the page ---------- */
+const GLYPH = {
+  fire: '<svg class="gl gl-fire" viewBox="0 0 24 24"><path d="M12 2.5c.8 4 5.2 6.2 5.2 11.2a5.2 5.2 0 0 1-10.4 0c0-2.2 1-3.6 2.2-4.6 0 2 .9 3.2 2.2 3.4C10.4 9.4 10.6 6 12 2.5z"/></svg>',
+  water: '<svg class="gl gl-water" viewBox="0 0 24 24"><path d="M-12 10c2-3 4-3 6 0s4 3 6 0c2-3 4-3 6 0s4 3 6 0c2-3 4-3 6 0s4 3 6 0"/><path d="M-12 16c2-3 4-3 6 0s4 3 6 0c2-3 4-3 6 0s4 3 6 0c2-3 4-3 6 0s4 3 6 0"/></svg>',
+  air: '<svg class="gl gl-air" viewBox="0 0 24 24"><path pathLength="100" d="M3 8h11a3 3 0 1 0-3-3"/><path pathLength="100" d="M3 13h15a3 3 0 1 1-3 3"/><path pathLength="100" d="M3 18h8"/></svg>',
+  noise: '<svg class="gl gl-noise" viewBox="0 0 24 24"><circle cx="5" cy="5" r="1.7"/><circle cx="12" cy="5" r="1.7"/><circle cx="19" cy="5" r="1.7"/><circle cx="5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="19" cy="12" r="1.7"/><circle cx="5" cy="19" r="1.7"/><circle cx="12" cy="19" r="1.7"/><circle cx="19" cy="19" r="1.7"/></svg>',
+  tones: '<svg class="gl gl-tones" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="10"/></svg>'
+};
 const mixer = $('#mixer');
 GROUPS.forEach(g => {
   const sec = document.createElement('section');
@@ -504,7 +538,7 @@ GROUPS.forEach(g => {
     const li = document.createElement('li');
     li.className = 'row';
     li.innerHTML =
-      '<button class="tog" type="button" aria-pressed="false" aria-label="' + s.name + '"><span class="play"></span><span class="bars"><i></i><i></i><i></i></span></button>' +
+      '<button class="tog" type="button" aria-pressed="false" aria-label="' + s.name + '"><span class="play"></span>' + GLYPH[g.id] + '</button>' +
       '<div class="txt"><span class="name">' + s.name + '</span><span class="note">' + s.note + '</span></div>' +
       '<input type="range" min="0" max="100" value="' + (s.def * 100) + '" aria-label="' + s.name + ' volume">';
     s.li = li; s.btn = li.querySelector('.tog'); s.inp = li.querySelector('input');
@@ -550,7 +584,7 @@ masterInp.addEventListener('input', () => {
   if (master && !timer.fading) master.gain.setTargetAtTime(masterAmp(), ctx.currentTime, .05);
 });
 
-const timer = { end: 0, id: 0, fading: false };
+const timer = { end: 0, total: 1, id: 0, fading: false };
 const timerBtns = [...document.querySelectorAll('#timer .chip')];
 function clearTimer() {
   clearInterval(timer.id); timer.end = 0; timer.fading = false; left.textContent = '';
@@ -561,7 +595,7 @@ function startTimer(min) {
   clearTimer();
   if (!min) return;
   timerBtns.forEach(b => b.setAttribute('aria-pressed', b.dataset.min === String(min)));
-  timer.end = Date.now() + min * 60000;
+  timer.total = min * 60000; timer.end = Date.now() + timer.total;
   const tick = () => {
     const ms = timer.end - Date.now();
     if (ms <= 0) { stopAll(); return; }
@@ -596,8 +630,9 @@ function refresh() {
 
 /* ---------- the orb ---------- */
 const cv = $('#orb'), c = cv.getContext('2d'), capWord = $('#capWord'), capNum = $('#capNum');
-let dpr = 1, W = 0, H = 0, lastWord = '', lastNum = '', t0 = 0, wasPlaying = false, guide = 0;
-const IN = 4, OUT = 6, CYCLE = IN + OUT, TAU = Math.PI * 2;
+let dpr = 1, W = 0, H = 0, lastWord = '', lastNum = '', hintOn = null;
+const hint = $('#orbHint');
+const IN = 5, OUT = 8, CYCLE = IN + OUT, TAU = Math.PI * 2;
 const fd = new Uint8Array(128);
 const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(',');
 function fit() {
@@ -627,10 +662,7 @@ function frame(ms) {
 
   let playing = 0;
   for (const s of sounds) if (s.on) playing++;
-  if (playing && !wasPlaying) t0 = t;
-  wasPlaying = playing > 0;
-
-  const ph = (((t - t0) % CYCLE) + CYCLE) % CYCLE;
+  const ph = t % CYCLE;
   const inhale = ph < IN;
   const prog = inhale ? ph / IN : (ph - IN) / OUT;
   const e = (1 - Math.cos(Math.PI * prog)) / 2;
@@ -640,11 +672,17 @@ function frame(ms) {
   if (analyser) { analyser.getByteFrequencyData(fd); let sum = 0; for (let i = 0; i < fd.length; i++) sum += fd[i]; energy = sum / fd.length / 255; }
   const R = Math.min(W, H) / 2, mx = W / 2, my = H / 2;
   const wob = reduce.matches ? 0 : .012 + energy * .06;
-  guide += ((playing ? 1 : 0) - guide) * .06;
+  const guide = 1;
 
-  ring(mx, my, R * (.30 + .03 * breath), '213,224,222', 0, .5 * (1 - guide), t, 0, 0, 0);
+  ring(mx, my, R * (.30 + .03 * breath), '213,224,222', 0, .12, t, 0, 0, 0);
+  const bAge = t - ev.bowlT;
+  if (bAge > 0 && bAge < 7 && !reduce.matches) {
+    const kk = bAge / 7;
+    c.lineWidth = 2 * dpr; c.strokeStyle = 'rgba(185,168,236,' + (.45 * Math.pow(1 - kk, 2)) + ')';
+    c.beginPath(); c.arc(mx, my, R * (.3 + .62 * kk), 0, TAU); c.stroke();
+  }
 
-  if (guide > .01) {
+  {
     const rg = R * (.12 + .13 * breath);
     const gr = c.createRadialGradient(mx, my, 0, mx, my, rg);
     gr.addColorStop(0, 'rgba(213,224,222,' + (.24 * guide) + ')');
@@ -675,14 +713,129 @@ function frame(ms) {
   }
 
   let word, num = '';
-  if (!playing) word = 'Pick a sound to begin';
-  else if (reduce.matches) word = 'Breathe slowly';
+  if (reduce.matches) word = 'Breathe slowly';
   else { word = inhale ? 'Breathe in' : 'Breathe out'; num = String(Math.ceil((inhale ? IN : OUT) * (1 - prog))); }
   if (word !== lastWord) { capWord.textContent = word; lastWord = word; }
   if (num !== lastNum) { capNum.textContent = num; lastNum = num; }
+  const showHint = playing === 0;
+  if (showHint !== hintOn) { hint.classList.toggle('off', !showHint); hintOn = showHint; }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
+
+/* ---------- weather layer behind the page ---------- */
+const fxc = $('#fx'), x = fxc.getContext('2d');
+let fw = 0, fh = 0, fs = 1, fxLast = 0;
+function fxFit() { fs = Math.min(window.devicePixelRatio || 1, 1.5); fw = fxc.width = Math.round(innerWidth * fs); fh = fxc.height = Math.round(innerHeight * fs); }
+addEventListener('resize', fxFit); fxFit();
+const rnd = (a, b) => a + Math.random() * (b - a);
+const clamp01 = v => Math.max(0, Math.min(1, v));
+const stars = Array.from({ length: 80 }, () => ({ x: Math.random(), y: Math.random(), r: rnd(.5, 1.4), p: Math.random() * 6.28 }));
+function dot(px, py, r, col, a) {
+  if (a <= .005) return;
+  x.fillStyle = 'rgba(' + col + ',' + (a * .22) + ')'; x.beginPath(); x.arc(px, py, r * 3.2, 0, TAU); x.fill();
+  x.fillStyle = 'rgba(' + col + ',' + a + ')'; x.beginPath(); x.arc(px, py, r, 0, TAU); x.fill();
+}
+const KIND = {
+  ember: { col: '242,160,101',
+    spawn(p) { p.x = rnd(0, fw); p.y = fh + 8 * fs; p.vx = rnd(-10, 10) * fs; p.vy = -rnd(35, 95) * fs; p.r = rnd(1, 2.6) * fs; p.ttl = rnd(4, 8); },
+    draw(p, a, dt, t) { p.x += (p.vx + Math.sin(t * 2 + p.ph) * 14 * fs) * dt; p.y += p.vy * dt;
+      dot(p.x, p.y, p.r, this.col, a * Math.sin(Math.PI * p.t / p.ttl) * (.6 + .4 * Math.sin(t * 14 + p.ph))); } },
+  rain: { col: '109,185,204',
+    spawn(p, init) { p.x = rnd(0, fw + 200 * fs); p.y = init ? rnd(0, fh) : -20 * fs; p.vy = rnd(650, 950) * fs; p.vx = -p.vy * .18; p.ttl = 99; },
+    draw(p, a, dt) { p.x += p.vx * dt; p.y += p.vy * dt;
+      x.strokeStyle = 'rgba(' + this.col + ',' + (a * .3) + ')'; x.lineWidth = 1.2 * fs;
+      x.beginPath(); x.moveTo(p.x, p.y); x.lineTo(p.x - p.vx * .03, p.y - p.vy * .03); x.stroke(); } },
+  ripple: { col: '109,185,204',
+    spawn(p) { p.x = rnd(.05, .95) * fw; p.y = rnd(.55, .95) * fh; p.ttl = rnd(3, 5); p.r = rnd(30, 70) * fs; },
+    draw(p, a) { const k = p.t / p.ttl;
+      x.strokeStyle = 'rgba(' + this.col + ',' + (a * .4 * (1 - k)) + ')'; x.lineWidth = 1.2 * fs;
+      x.beginPath(); x.ellipse(p.x, p.y, p.r * k, p.r * k * .35, 0, 0, TAU); x.stroke(); } },
+  streak: { col: '166,199,156',
+    spawn(p, init) { p.len = rnd(120, 260) * fs; p.x = init ? rnd(0, fw) : -p.len; p.y = rnd(0, fh); p.vx = rnd(50, 120) * fs; p.ttl = 99; },
+    draw(p, a, dt) { p.x += p.vx * dt;
+      const f = Math.sin(Math.PI * clamp01((p.x + p.len) / (fw + p.len)));
+      x.strokeStyle = 'rgba(' + this.col + ',' + (a * .13 * f) + ')'; x.lineWidth = 1.3 * fs; x.lineCap = 'round';
+      x.beginPath(); x.moveTo(p.x, p.y); x.lineTo(p.x + p.len, p.y + p.len * .03); x.stroke(); } },
+  firefly: { col: '196,226,130',
+    spawn(p) { p.x = rnd(0, fw); p.y = rnd(.3, 1) * fh; p.r = rnd(1.4, 2.4) * fs; p.ttl = rnd(8, 16); },
+    draw(p, a, dt, t) { p.x += Math.sin(t * .7 + p.ph) * 14 * fs * dt; p.y += Math.cos(t * .5 + p.ph * 2) * 10 * fs * dt;
+      const blink = Math.pow(Math.max(0, Math.sin(t * 1.3 + p.ph)), 3);
+      dot(p.x, p.y, p.r, this.col, a * blink * Math.sin(Math.PI * p.t / p.ttl)); } },
+  dust: { col: '213,224,222',
+    spawn(p) { p.x = rnd(0, fw); p.y = rnd(0, fh); p.vx = rnd(-6, 6) * fs; p.vy = rnd(-6, 6) * fs; p.r = rnd(.6, 1.5) * fs; p.ttl = rnd(8, 16); },
+    draw(p, a, dt) { p.x += p.vx * dt; p.y += p.vy * dt;
+      x.fillStyle = 'rgba(' + this.col + ',' + (a * .35 * Math.sin(Math.PI * p.t / p.ttl)) + ')';
+      x.beginPath(); x.arc(p.x, p.y, p.r, 0, TAU); x.fill(); } },
+  mote: { col: '185,168,236',
+    spawn(p) { p.x = rnd(0, fw); p.y = fh + 10 * fs; p.vy = -rnd(12, 28) * fs; p.r = rnd(2, 4.5) * fs; p.ttl = rnd(10, 18); },
+    draw(p, a, dt, t) { p.x += Math.sin(t * .6 + p.ph) * 8 * fs * dt; p.y += p.vy * dt;
+      dot(p.x, p.y, p.r, this.col, a * .5 * Math.sin(Math.PI * p.t / p.ttl)); } }
+};
+const SK = { campfire: ['ember', 50], embers: ['ember', 22], rain: ['rain', 120], stream: ['ripple', 7], wind: ['streak', 12],
+  crickets: ['firefly', 16], white: ['dust', 36], pink: ['dust', 36], brown: ['dust', 36], bowl: ['mote', 14],
+  delta: ['mote', 16], theta: ['mote', 16], alpha: ['mote', 16], hz432: ['mote', 14], hz528: ['mote', 14] };
+const pools = {};
+const GLOW = { fire: [.3, 1.05], water: [.85, 1.0], air: [.9, .0], noise: [.1, .05], tones: [.5, .45] };
+
+function fxFrame(ms) {
+  const t = ms / 1000, dt = Math.min(.05, Math.max(0, t - fxLast)); fxLast = t;
+  x.clearRect(0, 0, fw, fh);
+  if (!reduce.matches) {
+    const sky = timer.end ? clamp01(1 - (timer.end - Date.now()) / timer.total) : 0;
+    if (sky > 0) { x.fillStyle = 'rgba(4,8,12,' + (.4 * sky) + ')'; x.fillRect(0, 0, fw, fh); }
+
+    const gv = {};
+    for (const s of sounds) gv[s.group] = Math.max(gv[s.group] || 0, s.vis);
+    const big = Math.max(fw, fh) * .75;
+    for (const g of GROUPS) {
+      const v = gv[g.id] || 0; if (v < .02) continue;
+      const [gx, gy] = GLOW[g.id], cx = (gx + .06 * Math.sin(t * .1 + gx * 9)) * fw, cy = (gy + .05 * Math.cos(t * .08 + gy * 9)) * fh;
+      const gr = x.createRadialGradient(cx, cy, 0, cx, cy, big);
+      gr.addColorStop(0, 'rgba(' + rgb(g.hue) + ',' + (.16 * v) + ')'); gr.addColorStop(1, 'rgba(' + rgb(g.hue) + ',0)');
+      x.fillStyle = gr; x.fillRect(0, 0, fw, fh);
+    }
+
+    if (sky > 0) for (const st of stars) {
+      x.fillStyle = 'rgba(230,238,240,' + (sky * (.3 + .35 * Math.sin(t * .8 + st.p))) + ')';
+      x.beginPath(); x.arc(st.x * fw, st.y * fh * .8, st.r * fs, 0, TAU); x.fill();
+    }
+
+    const w = byId.waves.vis;
+    if (w > .02) for (let l = 0; l < 3; l++) {
+      const base = fh - (26 + l * 30) * fs, amp = (8 + 7 * l) * fs * (.4 + w);
+      x.beginPath(); x.moveTo(0, fh);
+      for (let xx = 0; xx <= fw + 24 * fs; xx += 24 * fs) x.lineTo(xx, base + Math.sin(xx / fw * TAU * (1.3 + l * .4) + t * (.35 + .12 * l) + l) * amp);
+      x.lineTo(fw, fh); x.closePath();
+      x.fillStyle = 'rgba(109,185,204,' + (.06 * Math.min(1, w * 1.6)) + ')'; x.fill();
+    }
+
+    for (const s of sounds) {
+      const m = SK[s.id]; if (!m) continue;
+      const K = KIND[m[0]], pool = pools[s.id] || (pools[s.id] = []);
+      const want = Math.round(m[1] * Math.min(1, s.vis * 1.4));
+      for (let n = 0; n < 3 && pool.length < want; n++) {
+        const p = { t: 0, ph: Math.random() * 6.28, x: 0, y: 0, vx: 0, vy: 0, r: 1, ttl: 5, len: 0 };
+        K.spawn(p, m[0] === 'rain' || m[0] === 'dust' || m[0] === 'streak'); pool.push(p);
+      }
+      const a = Math.min(1, s.vis * 3);
+      for (let i = pool.length - 1; i >= 0; i--) {
+        const p = pool[i]; p.t += dt;
+        K.draw(p, a, dt, t);
+        if (p.t > p.ttl || p.y < -30 * fs || p.y > fh + 40 * fs || p.x > fw + 60 * fs || p.x < -400 * fs) {
+          if (pool.length > want) pool.splice(i, 1); else { p.t = 0; K.spawn(p, false); }
+        }
+      }
+    }
+
+    const fa = t - ev.flashT;
+    if (fa > 0 && fa < 1.4) {
+      x.fillStyle = 'rgba(200,215,255,' + (.12 * Math.pow(1 - fa / 1.4, 2) * (fa < .15 ? 1.8 : 1)) + ')'; x.fillRect(0, 0, fw, fh);
+    }
+  }
+  requestAnimationFrame(fxFrame);
+}
+requestAnimationFrame(fxFrame);
 })();
 </script>
 </body>
