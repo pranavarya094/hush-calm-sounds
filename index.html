@@ -77,6 +77,35 @@ h1{
 }
 .orbhint.off{opacity:0}
 
+.presets{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem}
+.presets-label{grid-column:1/-1}
+.tile{
+  position:relative;overflow:hidden;height:96px;padding:.7rem .8rem;border-radius:14px;
+  border:1px solid var(--line);background:var(--deep);color:#fff;text-align:left;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:flex-end;gap:.15rem;font-family:var(--sans);
+  transition:border-color .2s,transform .25s;
+}
+.tile canvas{position:absolute;inset:0;width:100%;height:100%}
+.tile::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,14,19,.88),rgba(8,14,19,0) 75%)}
+.tn,.ts{position:relative;z-index:1}
+.tn{font:500 .95rem/1.2 var(--sans)}
+.ts{font-size:.75rem;line-height:1.3;color:var(--mist);opacity:.8}
+.tile:hover{border-color:var(--mist);transform:translateY(-2px)}
+.orbwrap.tap{cursor:pointer}
+
+@keyframes rise{from{opacity:0;transform:translateY(18px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes orbin{from{opacity:0;transform:scale(.78)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.mark{display:inline-block;animation:rise 1.1s cubic-bezier(.2,.7,.2,1) .1s both}
+.w{display:inline-block;animation:rise 1.2s cubic-bezier(.2,.7,.2,1) .3s both}
+.w+.w{animation-delay:.6s}
+.lede{animation:rise 1.1s cubic-bezier(.2,.7,.2,1) 1s both}
+.presets{animation:rise 1.1s cubic-bezier(.2,.7,.2,1) 1.3s both}
+.orbwrap{animation:orbin 2s cubic-bezier(.2,.7,.2,1) .4s both}
+.orbhint{animation:fade 1.5s ease 2.6s both}
+.mixer{animation:rise 1.1s ease 1.8s both}
+#fx{animation:fade 2.5s ease both}
+
 .mixer{max-width:1120px;margin:0 auto;padding:0 1.25rem}
 .group{display:grid;gap:1rem;border-top:1px solid var(--line);padding:2rem 0}
 @media(min-width:760px){.group{grid-template-columns:240px 1fr;gap:3rem}}
@@ -189,6 +218,8 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
   .gl *{animation:none!important;opacity:1!important}
   .dock{transition:none}
   .orbhint{transition:none}
+  .mark,.w,.lede,.presets,.orbwrap,.orbhint,.mixer,#fx{animation:none}
+  .tile{transition:none}
 }
 </style>
 </head>
@@ -200,16 +231,16 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
 <main>
   <section class="hero">
     <div>
-      <h1>Turn the room down.</h1>
+      <h1><span class="w">Turn the</span> <span class="w">room down.</span></h1>
       <p class="lede">Mix fire, water, wind and steady tones into one quiet soundscape. Every sound is generated in your browser, so there is nothing to download and nothing to buy.</p>
       <div class="presets" id="presets">
         <span class="presets-label">Start with a mix</span>
       </div>
     </div>
-    <div class="orbwrap">
+    <div class="orbwrap" id="orbWrap" role="button" tabindex="0" aria-label="Start a calming mix">
       <canvas id="orb" aria-hidden="true"></canvas>
       <p class="cap" aria-hidden="true"><span id="capWord">Breathe in</span><span class="cap-num" id="capNum"></span></p>
-      <p class="orbhint" id="orbHint">Breathe with the circle. Pick a sound when you are ready.</p>
+      <p class="orbhint" id="orbHint">Breathe with the circle. Tap it to begin.</p>
     </div>
   </section>
 
@@ -552,27 +583,46 @@ GROUPS.forEach(g => {
 
 /* presets */
 const PRESETS = [
-  ['Fireside',         { campfire: .7, rain: .25, wind: .15 }],
-  ['Rain on the roof', { rain: .7, thunder: .4, wind: .12 }],
-  ['Night by the sea', { waves: .65, wind: .2, crickets: .18 }],
-  ['Forest stream',    { stream: .55, wind: .22, crickets: .25 }],
-  ['Deep sleep',       { brown: .45, waves: .3, wind: .12, bowl: .25 }]
+  ['Fireside',         'Campfire, soft rain, wind',  'fire',   { campfire: .7, rain: .25, wind: .15 }],
+  ['Rain on the roof', 'Steady rain, far thunder',   'rain',   { rain: .7, thunder: .4, wind: .12 }],
+  ['Night by the sea', 'Waves, wind, crickets',      'sea',    { waves: .65, wind: .2, crickets: .18 }],
+  ['Forest stream',    'Water, wind, night insects', 'stream', { stream: .55, wind: .22, crickets: .25 }],
+  ['Deep sleep',       'Brown noise, waves, a bowl', 'sleep',  { brown: .45, waves: .3, wind: .12, bowl: .25 }]
 ];
-const presetBox = $('#presets');
-PRESETS.forEach(([name, mix]) => {
-  const b = document.createElement('button');
-  b.className = 'chip'; b.type = 'button'; b.textContent = name;
-  b.addEventListener('click', () => {
-    ensure();
-    sounds.forEach(s => {
-      if (mix[s.id] != null) {
-        s.vol = mix[s.id]; s.inp.value = s.vol * 100; paint(s);
-        if (s.on) s.ch.gain.setTargetAtTime(amp(s), ctx.currentTime, .3); else turnOn(s);
-      } else turnOff(s);
-    });
+function applyMix(mix) {
+  ensure();
+  sounds.forEach(s => {
+    if (mix[s.id] != null) {
+      s.vol = mix[s.id]; s.inp.value = s.vol * 100; paint(s);
+      if (s.on) s.ch.gain.setTargetAtTime(amp(s), ctx.currentTime, .3); else turnOn(s);
+    } else turnOff(s);
   });
+}
+const TILE_C = { fire: ['#3b1f12', '#140e11'], rain: ['#1d3340', '#0e1a22'], sea: ['#17394a', '#0c1a24'], stream: ['#1b3a30', '#0d1b1a'], sleep: ['#2a2250', '#0e1020'] };
+const TILE_N = { fire: 22, rain: 34, sea: 0, stream: 12, sleep: 26 };
+const presetBox = $('#presets');
+const tiles = [];
+PRESETS.forEach(([name, sub, scene, mix]) => {
+  const b = document.createElement('button');
+  b.className = 'tile'; b.type = 'button';
+  b.innerHTML = '<canvas aria-hidden="true"></canvas><span class="tn">' + name + '</span><span class="ts">' + sub + '</span>';
+  b.addEventListener('click', () => applyMix(mix));
   presetBox.append(b);
+  const tc = b.querySelector('canvas');
+  const tl = { g: tc.getContext('2d'), scene, w: 0, h: 0, k: 1, c0: TILE_C[scene][0], c1: TILE_C[scene][1], ps: [] };
+  for (let i = 0; i < TILE_N[scene]; i++) tl.ps.push({ x: Math.random(), y: Math.random(), o: Math.random(), v: .05 + Math.random() * .1, r: .6 + Math.random() * 1.4 });
+  new ResizeObserver(() => {
+    const r = tc.getBoundingClientRect();
+    tl.k = Math.min(window.devicePixelRatio || 1, 2);
+    tl.w = tc.width = Math.round(r.width * tl.k); tl.h = tc.height = Math.round(r.height * tl.k);
+  }).observe(tc);
+  tiles.push(tl);
 });
+
+const orbWrap = $('#orbWrap');
+const startDefault = () => { if (!sounds.some(s => s.on)) applyMix(PRESETS[1][3]); };
+orbWrap.addEventListener('click', startDefault);
+orbWrap.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startDefault(); } });
 
 /* dock: volume, timer, stop */
 const dock = $('#dock'), left = $('#left'), status = $('#status');
@@ -718,7 +768,7 @@ function frame(ms) {
   if (word !== lastWord) { capWord.textContent = word; lastWord = word; }
   if (num !== lastNum) { capNum.textContent = num; lastNum = num; }
   const showHint = playing === 0;
-  if (showHint !== hintOn) { hint.classList.toggle('off', !showHint); hintOn = showHint; }
+  if (showHint !== hintOn) { hint.classList.toggle('off', !showHint); orbWrap.classList.toggle('tap', showHint); hintOn = showHint; }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
@@ -796,8 +846,20 @@ function fxFrame(ms) {
       x.fillStyle = gr; x.fillRect(0, 0, fw, fh);
     }
 
-    if (sky > 0) for (const st of stars) {
-      x.fillStyle = 'rgba(230,238,240,' + (sky * (.3 + .35 * Math.sin(t * .8 + st.p))) + ')';
+    let total = 0;
+    for (const s of sounds) total += s.vis;
+    const idle = 1 - clamp01(total * 2.5);
+    if (idle > .02) {
+      for (const [col, ax, ay, ph] of AUR) {
+        const cx = (ax + .12 * Math.sin(t * .07 + ph)) * fw, cy = (ay + .1 * Math.cos(t * .05 + ph)) * fh, rr = Math.max(fw, fh) * .55;
+        const ag = x.createRadialGradient(cx, cy, 0, cx, cy, rr);
+        ag.addColorStop(0, 'rgba(' + col + ',' + (.13 * idle) + ')'); ag.addColorStop(1, 'rgba(' + col + ',0)');
+        x.fillStyle = ag; x.fillRect(0, 0, fw, fh);
+      }
+    }
+    if (sky > 0 || idle > .02) for (const st of stars) {
+      const tw = Math.sin(t * .8 + st.p);
+      x.fillStyle = 'rgba(230,238,240,' + Math.max(sky * (.3 + .35 * tw), idle * (.2 + .25 * tw)) + ')';
       x.beginPath(); x.arc(st.x * fw, st.y * fh * .8, st.r * fs, 0, TAU); x.fill();
     }
 
@@ -810,15 +872,12 @@ function fxFrame(ms) {
       x.fillStyle = 'rgba(109,185,204,' + (.06 * Math.min(1, w * 1.6)) + ')'; x.fill();
     }
 
-    for (const s of sounds) {
-      const m = SK[s.id]; if (!m) continue;
-      const K = KIND[m[0]], pool = pools[s.id] || (pools[s.id] = []);
-      const want = Math.round(m[1] * Math.min(1, s.vis * 1.4));
+    const runPool = (key, kind, want, a, init) => {
+      const K = KIND[kind], pool = pools[key] || (pools[key] = []);
       for (let n = 0; n < 3 && pool.length < want; n++) {
         const p = { t: 0, ph: Math.random() * 6.28, x: 0, y: 0, vx: 0, vy: 0, r: 1, ttl: 5, len: 0 };
-        K.spawn(p, m[0] === 'rain' || m[0] === 'dust' || m[0] === 'streak'); pool.push(p);
+        K.spawn(p, init); pool.push(p);
       }
-      const a = Math.min(1, s.vis * 3);
       for (let i = pool.length - 1; i >= 0; i--) {
         const p = pool[i]; p.t += dt;
         K.draw(p, a, dt, t);
@@ -826,7 +885,12 @@ function fxFrame(ms) {
           if (pool.length > want) pool.splice(i, 1); else { p.t = 0; K.spawn(p, false); }
         }
       }
+    };
+    for (const s of sounds) {
+      const m = SK[s.id]; if (!m) continue;
+      runPool(s.id, m[0], Math.round(m[1] * Math.min(1, s.vis * 1.4)), Math.min(1, s.vis * 3), m[0] === 'rain' || m[0] === 'dust' || m[0] === 'streak');
     }
+    runPool('idle', 'firefly', Math.round(16 * idle), idle, false);
 
     const fa = t - ev.flashT;
     if (fa > 0 && fa < 1.4) {
@@ -835,7 +899,55 @@ function fxFrame(ms) {
   }
   requestAnimationFrame(fxFrame);
 }
+const AUR = [['109,185,204', .25, .2, 0], ['185,168,236', .7, .3, 2], ['242,160,101', .5, .85, 4]];
 requestAnimationFrame(fxFrame);
+
+/* ---------- mini scenes on the mix tiles ---------- */
+function tdot(g, px, py, r, col, a) {
+  if (a <= .01) return;
+  g.fillStyle = 'rgba(' + col + ',' + (a * .25) + ')'; g.beginPath(); g.arc(px, py, r * 3, 0, TAU); g.fill();
+  g.fillStyle = 'rgba(' + col + ',' + a + ')'; g.beginPath(); g.arc(px, py, r, 0, TAU); g.fill();
+}
+const SPEED = { fire: 3, rain: 9, stream: 1, sleep: .5 };
+function drawTile(tl, t) {
+  const g = tl.g, w = tl.w, h = tl.h, k = tl.k;
+  if (!w || !h) return;
+  const bg = g.createLinearGradient(0, 0, 0, h); bg.addColorStop(0, tl.c0); bg.addColorStop(1, tl.c1);
+  g.fillStyle = bg; g.fillRect(0, 0, w, h);
+  const m = reduce.matches ? 3 : t;
+  if (tl.scene === 'fire') {
+    const gr = g.createRadialGradient(w * .35, h * 1.15, 0, w * .35, h * 1.15, h * 1.2);
+    gr.addColorStop(0, 'rgba(242,160,101,' + (.38 + .08 * Math.sin(m * 7)) + ')'); gr.addColorStop(1, 'rgba(242,160,101,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, w, h);
+  }
+  if (tl.scene === 'sea') {
+    for (let l = 0; l < 3; l++) {
+      g.beginPath(); g.moveTo(0, h);
+      for (let xx = 0; xx <= w + 8 * k; xx += 8 * k) g.lineTo(xx, h * (.5 + .13 * l) + Math.sin(xx / w * TAU * (1.2 + l * .5) + m * (.8 + l * .3) + l) * 5 * k);
+      g.lineTo(w, h); g.closePath(); g.fillStyle = 'rgba(109,185,204,' + (.16 + .08 * l) + ')'; g.fill();
+    }
+  }
+  const sp = SPEED[tl.scene] || 1;
+  tl.ps.forEach((p, i) => {
+    const u = (p.o + m * p.v * sp) % 1;
+    if (tl.scene === 'fire') tdot(g, p.x * w + Math.sin(m * 1.5 + p.o * 9) * 6 * k, h * (1.05 - u * 1.1), p.r * k, '242,160,101', Math.sin(Math.PI * u) * .9);
+    else if (tl.scene === 'rain') {
+      const px = p.x * w - u * 16 * k, py = (u * 1.1 - .05) * h;
+      g.strokeStyle = 'rgba(160,205,225,.45)'; g.lineWidth = k; g.beginPath(); g.moveTo(px, py); g.lineTo(px - 2 * k, py - 9 * k); g.stroke();
+    } else if (tl.scene === 'stream') {
+      if (i < 2) {
+        const ru = (p.o + m * .25) % 1;
+        g.strokeStyle = 'rgba(109,185,204,' + (.45 * (1 - ru)) + ')'; g.lineWidth = k;
+        g.beginPath(); g.ellipse(p.x * w, h * (.55 + .3 * p.y), 28 * k * ru, 9 * k * ru, 0, 0, TAU); g.stroke();
+      } else tdot(g, p.x * w + Math.sin(m * .7 + p.o * 9) * 8 * k, p.y * h * .8 + Math.cos(m * .5 + p.o * 7) * 5 * k, p.r * k * .8, '196,226,130', Math.pow(Math.max(0, Math.sin(m * 1.3 + p.o * 20)), 3));
+    } else if (tl.scene === 'sleep') {
+      if (i % 4 === 0) tdot(g, p.x * w, h * (1.05 - u * 1.1), p.r * 1.4 * k, '185,168,236', Math.sin(Math.PI * u) * .6);
+      else tdot(g, p.x * w, p.y * h * .9, p.r * .7 * k, '230,238,240', .25 + .5 * (.5 + .5 * Math.sin(m * .8 + p.o * 20)));
+    }
+  });
+}
+function tileFrame(ms) { for (const tl of tiles) drawTile(tl, ms / 1000); requestAnimationFrame(tileFrame); }
+requestAnimationFrame(tileFrame);
 })();
 </script>
 </body>
