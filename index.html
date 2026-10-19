@@ -60,13 +60,15 @@ h1{
 .chip[aria-pressed=true]{background:var(--mist);color:var(--night);border-color:var(--mist)}
 .chip.sm{padding:.5rem .8rem;font-size:.875rem}
 
-.orbwrap{position:relative;aspect-ratio:1;width:100%;max-width:560px;justify-self:center}
+.orbwrap{position:relative;aspect-ratio:1;width:100%;max-width:560px;justify-self:center;container-type:size}
 #orb{position:absolute;inset:0;width:100%;height:100%;display:block}
 .cap{
-  position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;
-  font:300 1.15rem/1.3 var(--serif);font-variation-settings:"SOFT" 100;
+  position:absolute;inset:0;display:grid;place-content:center;gap:.25em;pointer-events:none;
+  font:300 clamp(.8rem,4.2cqw,1.15rem)/1.2 var(--serif);font-variation-settings:"SOFT" 100;
   color:var(--mist);text-align:center;padding:0 36%;
 }
+.cap-num{font:400 clamp(1.2rem,8cqw,2.1rem)/1 var(--serif);font-variant-numeric:tabular-nums;font-variation-settings:"SOFT" 100}
+.cap-num:empty{display:none}
 
 .mixer{max-width:1120px;margin:0 auto;padding:0 1.25rem}
 .group{display:grid;gap:1rem;border-top:1px solid var(--line);padding:2rem 0}
@@ -184,7 +186,7 @@ input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;bac
     </div>
     <div class="orbwrap">
       <canvas id="orb" aria-hidden="true"></canvas>
-      <p class="cap" id="cap" aria-hidden="true">Pick a sound to begin</p>
+      <p class="cap" aria-hidden="true"><span id="capWord">Pick a sound to begin</span><span class="cap-num" id="capNum"></span></p>
     </div>
   </section>
 
@@ -593,8 +595,9 @@ function refresh() {
 }
 
 /* ---------- the orb ---------- */
-const cv = $('#orb'), c = cv.getContext('2d'), cap = $('#cap');
-let dpr = 1, W = 0, H = 0, lastLabel = '';
+const cv = $('#orb'), c = cv.getContext('2d'), capWord = $('#capWord'), capNum = $('#capNum');
+let dpr = 1, W = 0, H = 0, lastWord = '', lastNum = '', t0 = 0, wasPlaying = false, guide = 0;
+const IN = 4, OUT = 6, CYCLE = IN + OUT, TAU = Math.PI * 2;
 const fd = new Uint8Array(128);
 const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)).join(',');
 function fit() {
@@ -621,28 +624,62 @@ function ring(cx, cy, r, color, fillA, strokeA, t, k, seed, wob) {
 function frame(ms) {
   const t = ms / 1000;
   c.clearRect(0, 0, W, H);
-  const p = (t % 10) / 10, inhale = p < .4;
-  const x = inhale ? p / .4 : (p - .4) / .6, e = (1 - Math.cos(Math.PI * x)) / 2;
+
+  let playing = 0;
+  for (const s of sounds) if (s.on) playing++;
+  if (playing && !wasPlaying) t0 = t;
+  wasPlaying = playing > 0;
+
+  const ph = (((t - t0) % CYCLE) + CYCLE) % CYCLE;
+  const inhale = ph < IN;
+  const prog = inhale ? ph / IN : (ph - IN) / OUT;
+  const e = (1 - Math.cos(Math.PI * prog)) / 2;
   const breath = reduce.matches ? .5 : (inhale ? e : 1 - e);
+
   let energy = 0;
   if (analyser) { analyser.getByteFrequencyData(fd); let sum = 0; for (let i = 0; i < fd.length; i++) sum += fd[i]; energy = sum / fd.length / 255; }
   const R = Math.min(W, H) / 2, mx = W / 2, my = H / 2;
   const wob = reduce.matches ? 0 : .012 + energy * .06;
+  guide += ((playing ? 1 : 0) - guide) * .06;
 
-  ring(mx, my, R * (.30 + .03 * breath), '213,224,222', 0, .5, t, 0, 0, 0);
+  ring(mx, my, R * (.30 + .03 * breath), '213,224,222', 0, .5 * (1 - guide), t, 0, 0, 0);
 
-  let k = 0, playing = 0;
+  if (guide > .01) {
+    const rg = R * (.12 + .13 * breath);
+    const gr = c.createRadialGradient(mx, my, 0, mx, my, rg);
+    gr.addColorStop(0, 'rgba(213,224,222,' + (.24 * guide) + ')');
+    gr.addColorStop(1, 'rgba(213,224,222,' + (.07 * guide) + ')');
+    c.fillStyle = gr; c.beginPath(); c.arc(mx, my, rg, 0, TAU); c.fill();
+    if (!reduce.matches) {
+      const ra = R * .30, a0 = -Math.PI / 2, lead = inhale ? prog : 1 - prog;
+      c.lineWidth = 3 * dpr; c.lineCap = 'round';
+      c.strokeStyle = 'rgba(213,224,222,' + (.16 * guide) + ')';
+      c.beginPath(); c.arc(mx, my, ra, 0, TAU); c.stroke();
+      if (lead > .004) {
+        c.strokeStyle = 'rgba(213,224,222,' + (.9 * guide) + ')';
+        c.beginPath(); c.arc(mx, my, ra, a0, a0 + TAU * lead); c.stroke();
+      }
+      const hx = mx + Math.cos(a0 + TAU * lead) * ra, hy = my + Math.sin(a0 + TAU * lead) * ra;
+      c.fillStyle = 'rgba(255,255,255,' + guide + ')';
+      c.beginPath(); c.arc(hx, hy, 4.5 * dpr, 0, TAU); c.fill();
+    }
+  }
+
+  let k = 0;
   for (const s of sounds) {
     const target = s.on ? s.vol : 0;
     s.vis += (target - s.vis) * .05;
-    if (s.on) playing++;
     if (s.vis < .01) continue;
-    const r = R * (.36 + .5 * Math.pow(s.vis, .8)) * (.97 + .05 * breath);
+    const r = R * (.36 + .5 * Math.pow(s.vis, .8)) * (.95 + .08 * breath);
     ring(mx, my, r, rgb(hueOf(s)), .07, .55 + .4 * s.vis, t, k++, s.seed, wob);
   }
 
-  const label = playing ? (reduce.matches ? 'Breathe slowly' : (inhale ? 'Breathe in' : 'Breathe out')) : 'Pick a sound to begin';
-  if (label !== lastLabel) { cap.textContent = label; lastLabel = label; }
+  let word, num = '';
+  if (!playing) word = 'Pick a sound to begin';
+  else if (reduce.matches) word = 'Breathe slowly';
+  else { word = inhale ? 'Breathe in' : 'Breathe out'; num = String(Math.ceil((inhale ? IN : OUT) * (1 - prog))); }
+  if (word !== lastWord) { capWord.textContent = word; lastWord = word; }
+  if (num !== lastNum) { capNum.textContent = num; lastNum = num; }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
