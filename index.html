@@ -196,9 +196,10 @@ body.sleep .chatfab,body.sleep .chatwin{display:none!important}
 .secsub{grid-column:1/-1;margin:0 0 .35rem;color:var(--dim);font-size:.9rem}
 @media(max-width:560px){
 .top{padding:.8rem 1rem .3rem;gap:.35rem 1rem}
-.nav{order:3;width:100%;justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -.4rem;padding-right:1.5rem;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
-.nav::-webkit-scrollbar{display:none}
-.nav a,.nav button{white-space:nowrap;padding:.4rem .7rem;font-size:.9rem;flex:none}
+.nav{order:3;width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:.35rem;margin:0;padding:0;overflow:visible;-webkit-mask-image:none;mask-image:none}
+.nav a,.nav button{white-space:nowrap;text-align:center;padding:.5rem .25rem;font-size:.86rem;border:1px solid var(--line);border-radius:999px;overflow:hidden;text-overflow:ellipsis}
+.nav a[data-route=soon]{border-color:rgba(242,160,101,.5)}
+.nav a[data-route=soon]::before{margin-right:.28rem}
 .aicta{margin-top:.7rem;padding:.9rem .9rem .85rem}
 .aicta-t{font-size:1.1rem}
 .wl{flex-wrap:nowrap}
@@ -220,6 +221,8 @@ body.sleep .chatfab,body.sleep .chatwin{display:none!important}
 #accWhy .habits li::before{background:#F2A065;opacity:.9}
 #accFeat{margin-top:1rem}
 .accs{margin-top:0;border-bottom:1px solid var(--line)}
+@media(max-width:380px){.nav a,.nav button{font-size:.8rem;padding:.5rem .1rem}}
+@media(max-width:340px){.nav a,.nav button{font-size:.72rem}}
 .habits{list-style:none;padding:0;display:grid;gap:.7rem;margin-top:.9rem;color:var(--dim)}
 .habits li{padding-left:1.3rem;position:relative}
 .habits li::before{content:"";position:absolute;left:0;top:.6em;width:.45rem;height:.45rem;border-radius:50%;background:var(--mist);opacity:.6}
