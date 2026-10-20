@@ -79,7 +79,7 @@ h1{font:300 clamp(2rem,5vw,3rem)/1.1 var(--serif);font-variation-settings:"SOFT"
 .quote{order:1;text-align:center;max-width:36rem;margin:1.1rem auto 0;min-height:5.2rem;display:flex;flex-direction:column;align-items:center;gap:.6rem}
 .q-text{font:300 1.15rem/1.45 var(--serif);font-variation-settings:"SOFT" 100;color:var(--mist);text-wrap:balance;transition:opacity .6s}
 .q-text.out{opacity:0}
-body.route-learn .quote,body.route-developer .quote{order:99;margin-top:2.2rem}
+body.route-learn .quote,body.route-developer .quote,body.route-soon .quote{order:99;margin-top:2.2rem}
 .stage{order:0}.view{order:2}
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-top:1rem;animation:rise 1.1s cubic-bezier(.2,.7,.2,1) 1.1s backwards}
 @media(max-width:620px){.cards{grid-template-columns:repeat(2,1fr)}}
@@ -144,6 +144,8 @@ summary::-webkit-details-marker{display:none}
 .dots i.f{background:var(--mist)}
 details.item p{color:var(--dim);margin-top:.6rem;max-width:60ch}
 details.item .src a{color:var(--mist);text-underline-offset:3px;margin-right:.8rem}
+.soon-badge{display:inline-block;font-size:.78rem;color:var(--mist);border:1px solid var(--line);border-radius:999px;padding:.25rem .8rem;margin-bottom:.9rem}
+.feat li strong{display:block;color:var(--mist);font-weight:500;margin-bottom:.1rem}
 .habits{list-style:none;padding:0;display:grid;gap:.7rem;margin-top:.9rem;color:var(--dim)}
 .habits li{padding-left:1.3rem;position:relative}
 .habits li::before{content:"";position:absolute;left:0;top:.6em;width:.45rem;height:.45rem;border-radius:50%;background:var(--mist);opacity:.6}
@@ -202,8 +204,8 @@ body.sleep main{padding:0}
 body.sleep #stage{position:fixed;inset:0;z-index:50;background:#04080b;display:grid;place-items:center;filter:brightness(.7)}
 body.sleep .orbwrap{width:min(86vw,72vh);margin:0}
 body.sleep #sleepbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;align-items:center;justify-content:space-between;gap:1rem;padding:1rem 1.25rem calc(1rem + env(safe-area-inset-bottom));color:var(--dim);font-size:.9rem}
-body.route-breathe .hero-copy,body.route-learn .hero-copy,body.route-developer .hero-copy{display:none}
-body.route-learn #stage,body.route-developer #stage{display:none}
+body.route-breathe .hero-copy,body.route-learn .hero-copy,body.route-developer .hero-copy,body.route-soon .hero-copy{display:none}
+body.route-learn #stage,body.route-developer #stage,body.route-soon #stage{display:none}
 body.sleep #stage{display:grid!important}
 @keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
 @keyframes orbin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
@@ -226,6 +228,7 @@ body.sleep #stage{display:grid!important}
     <a href="#/breathe" data-route="breathe" data-i18n="nav_breathe">Breathe</a>
     <a href="#/learn" data-route="learn" data-i18n="nav_learn">Learn</a>
     <a href="#/developer" data-route="developer" data-i18n="nav_dev">Developer</a>
+    <a href="#/soon" data-route="soon" data-i18n="nav_soon">Coming soon</a>
     <button type="button" id="nightBtn" aria-pressed="false">Night mode</button>
   </nav>
   <div class="lang" role="group" aria-label="Language">
@@ -271,6 +274,15 @@ body.sleep #stage{display:grid!important}
       <p style="margin-top:.9rem"><a class="chip" id="fbLink" href="https://github.com/pranavarya094/hush-calm-sounds/issues/new?title=Suggestion" target="_blank" rel="noopener" data-i18n="fb_b">Suggest on GitHub</a></p>
     </div>
     <p class="fine" data-i18n="disc">Balance Tones is a relaxation aid, not medical treatment. If sleep problems or anxiety last for weeks, talk to a doctor or therapist.</p>
+  </section>
+  <section class="view page" id="v-soon" hidden>
+    <span class="soon-badge" data-i18n="soon_badge">Coming soon</span>
+    <h2 data-i18n="soon_h">Your online therapist, on the go</h2>
+    <p class="body" data-i18n="soon_p1"></p>
+    <p class="body" data-i18n="soon_p2"></p>
+    <h2 data-i18n="soon_fh">Features</h2>
+    <ul class="habits feat" id="soonList"></ul>
+    <p class="fine" data-i18n="soon_note"></p>
   </section>
   <section class="view page" id="v-developer" hidden>
     <h2 data-i18n="d_h">Made by Pranav Arya</h2>
@@ -351,6 +363,7 @@ const store = {
 const I18N = {
 en: {
 ui: {
+nav_soon: "Coming soon", soon_badge: "Coming soon", soon_h: "Your online therapist, on the go", soon_p1: "A calm, steady presence you can reach any time, right inside WhatsApp or Telegram. Talk about your day, your worries or the thing you cannot name yet, and get a thoughtful reply that helps you see it more clearly.", soon_p2: "It is built to work alongside the sounds and breathing practices you already use here, so support does not stop when the music does.", soon_fh: "Features", soon_f: [["Chat where you already are", "Message it directly on WhatsApp or Telegram. There is no new app to learn and no appointment to book."], ["Remembers your story", "It keeps a gentle timeline of what you share, so you never have to start from the beginning or explain yourself twice."], ["Learns your rhythm", "It takes in your schedule, your routines and the habits that shape your days, and understands what a hard week looks like for you."], ["Notices patterns, kindly", "Over time it connects sleep, stress, energy and activity, and reflects what it sees back to you without judgement."], ["Guides you, never pushes", "It suggests the next best step for the moment you are in: a breathing practice, a sound mix, a pause, or a small change to your evening."], ["Checks in at the right time", "Warm, well-timed check-ins around the moments you tend to struggle, so you are not left to carry them alone."], ["You decide what is kept", "You choose what it remembers and can ask it to forget. Your story stays yours."]], soon_note: "An AI companion for everyday support between conversations with a professional. It is not a licensed therapist and not for emergencies. If you are in crisis, contact your local emergency number or a crisis line.",
 night: "Night mode", day: "Day mode", unl: "Keep playing", nav_dev: "Developer", tag: "Peace should not be paid for. It is free, for everyone.", cust_t: "Customize your own sound", cust_d: "Mix fire, rain, waves and tones to taste", cust_n: "{n} playing. Tap to adjust", q_new: "Another quote", d_h: "Made by Pranav Arya", d_p1: "Hi, I'm Pranav. I built Balance Tones because I wanted to help people feel at peace. The world is moving too fast, we need to slow down and regain a balance of our minds.", d_h5: "What a balance tone is", d_p5: "A balance tone is a sound that helps bring a human nervous system back to normal and at peace. Stress, noise and screens keep the body switched on. A steady, gentle sound gives it permission to switch down.", d_p6: "The name carries a second meaning. A tone is a pitch, and it is also the feel of a moment, like the tone of a voice or the tone of the body. Balance is the place between too much and too little, between alert and asleep, between holding on and letting go. A balance tone is the sound of arriving there. It is less about escaping the world than about returning to yourself.", d_h2: "Why Balance Tones is free", d_p2: "Apps like this usually charge a subscription before you can even hear the rain. I don't think peace should have a price. Balance Tones is free for everyone, with no account, no ads and no paywall.", d_p3: "I want people to feel free and at peace, wherever they are and whatever they can afford. If this page helps one person sleep a little better or get through a hard evening, it has done its job.", d_h3: "Why these sounds matter", d_h4: "Say hello", d_p4: "Found a bug, missing a sound, or want to tell me how Balance Tones helped? I would love to hear it.", d_site: "Visit pranavarya.com",
 nav_listen: "Listen", nav_breathe: "Breathe", nav_learn: "Learn",
 h1: "Turn the room down.",
@@ -455,6 +468,7 @@ tips: [
 },
 de: {
 ui: {
+nav_soon: "Demnächst", soon_badge: "Demnächst", soon_h: "Dein Online-Therapeut für unterwegs", soon_p1: "Eine ruhige, verlässliche Begleitung, die du jederzeit direkt in WhatsApp oder Telegram erreichst. Sprich über deinen Tag, deine Sorgen oder das, was du noch nicht benennen kannst, und erhalte eine durchdachte Antwort, die dir hilft, klarer zu sehen.", soon_p2: "Sie ist darauf ausgelegt, mit den Klängen und Atemübungen zusammenzuarbeiten, die du hier schon nutzt, damit die Unterstützung nicht endet, wenn die Musik aufhört.", soon_fh: "Funktionen", soon_f: [["Dort chatten, wo du schon bist", "Schreibe direkt per WhatsApp oder Telegram. Keine neue App und kein Termin nötig."], ["Erinnert sich an deine Geschichte", "Sie führt behutsam eine Zeitleiste deiner Erzählungen, damit du nie von vorn anfangen oder dich zweimal erklären musst."], ["Lernt deinen Rhythmus", "Sie versteht deinen Zeitplan, deine Routinen und die Gewohnheiten, die deine Tage prägen, und erkennt, wie eine schwere Woche für dich aussieht."], ["Erkennt Muster, einfühlsam", "Mit der Zeit verbindet sie Schlaf, Stress, Energie und Aktivität und spiegelt dir, was sie sieht, ohne zu urteilen."], ["Begleitet, ohne zu drängen", "Sie schlägt den passenden nächsten Schritt vor: eine Atemübung, eine Klangmischung, eine Pause oder eine kleine Änderung am Abend."], ["Meldet sich zur rechten Zeit", "Warme, gut getimte Nachfragen rund um die Momente, in denen es dir oft schwerfällt, damit du nicht allein damit bleibst."], ["Du entscheidest, was bleibt", "Du bestimmst, woran sie sich erinnert, und kannst sie bitten zu vergessen. Deine Geschichte bleibt deine."]], soon_note: "Ein KI-Begleiter für den Alltag zwischen Gesprächen mit Fachleuten. Er ist kein zugelassener Therapeut und nicht für Notfälle gedacht. In einer Krise wende dich an den Notruf oder eine Krisenhotline.",
 night: "Nachtmodus", day: "Tagmodus", unl: "Weiterspielen", nav_dev: "Entwickler", tag: "Frieden sollte nichts kosten. Er ist frei, für alle.", cust_t: "Gestalte deinen eigenen Klang", cust_d: "Mische Feuer, Regen, Wellen und Töne nach Geschmack", cust_n: "{n} aktiv. Tippen zum Anpassen", q_new: "Noch ein Zitat", d_h: "Von Pranav Arya", d_p1: "Hallo, ich bin Pranav. Ich habe Balance Tones gebaut, weil ich Menschen helfen wollte, zur Ruhe zu kommen. Die Welt dreht sich zu schnell, wir müssen langsamer werden und das Gleichgewicht unseres Geistes zurückgewinnen.", d_h5: "Was ein Balance Tone ist", d_p5: "Ein Balance Tone ist ein Klang, der das menschliche Nervensystem wieder ins Gleichgewicht und zur Ruhe bringen kann. Stress, Lärm und Bildschirme halten den Körper im Dauerbetrieb. Ein gleichmäßiger, sanfter Klang erlaubt ihm, herunterzufahren.", d_p6: "Der Name hat eine zweite Bedeutung. Ein Ton ist eine Tonhöhe, aber auch die Stimmung eines Moments, wie der Tonfall einer Stimme oder die Spannung des Körpers. Balance ist der Raum zwischen zu viel und zu wenig, zwischen wach und müde, zwischen festhalten und loslassen. Ein Balance Tone ist der Klang des Ankommens dort. Es geht weniger darum, der Welt zu entfliehen, als zu sich selbst zurückzufinden.", d_h2: "Warum Balance Tones kostenlos ist", d_p2: "Solche Apps verlangen meist ein Abo, bevor man auch nur den Regen hört. Ich finde nicht, dass Ruhe einen Preis haben sollte. Balance Tones ist für alle kostenlos, ohne Konto, ohne Werbung und ohne Bezahlschranke.", d_p3: "Ich möchte, dass Menschen sich frei und friedlich fühlen, egal wo sie sind und was sie sich leisten können. Wenn diese Seite einem einzigen Menschen hilft, etwas besser zu schlafen oder einen schweren Abend zu überstehen, hat sie ihren Zweck erfüllt.", d_h3: "Warum diese Klänge wichtig sind", d_h4: "Sag Hallo", d_p4: "Einen Fehler gefunden, einen Klang vermisst oder möchtest du mir erzählen, wie Balance Tones dir geholfen hat? Ich freue mich darauf, es zu hören.", d_site: "pranavarya.com besuchen",
 nav_listen: "Hören", nav_breathe: "Atmen", nav_learn: "Wissen",
 h1: "Dreh den Raum leiser.",
@@ -559,6 +573,7 @@ tips: [
 },
 hi: {
 ui: {
+nav_soon: "जल्द आ रहा है", soon_badge: "जल्द आ रहा है", soon_h: "आपका ऑनलाइन थेरेपिस्ट, हर जगह आपके साथ", soon_p1: "एक शांत, भरोसेमंद साथी, जिससे आप कभी भी सीधे WhatsApp या Telegram पर बात कर सकते हैं। अपने दिन, अपनी चिंताओं या उस बात के बारे में बताइए जिसे आप अभी शब्द नहीं दे पा रहे, और पाइए ऐसा सोच-समझकर दिया गया जवाब जो चीज़ों को साफ़ देखने में मदद करे।", soon_p2: "यह उन ध्वनियों और साँस के अभ्यासों के साथ मिलकर काम करने के लिए बना है जिन्हें आप यहाँ पहले से इस्तेमाल करते हैं, ताकि संगीत रुकने पर भी सहारा बना रहे।", soon_fh: "खूबियाँ", soon_f: [["वहीं बात कीजिए जहाँ आप पहले से हैं", "WhatsApp या Telegram पर सीधे संदेश भेजिए। न कोई नया ऐप, न अपॉइंटमेंट।"], ["आपकी कहानी याद रखता है", "आप जो बताते हैं उसकी एक कोमल समय-रेखा बनाए रखता है, ताकि आपको हर बार शुरू से न बताना पड़े।"], ["आपकी दिनचर्या समझता है", "यह आपके कार्यक्रम, दिनचर्या और उन आदतों को समझता है जो आपके दिन गढ़ती हैं, और जानता है कि आपके लिए कठिन हफ़्ता कैसा होता है।"], ["पैटर्न को नरमी से पहचानता है", "समय के साथ यह नींद, तनाव, ऊर्जा और गतिविधि को जोड़कर देखता है और जो दिखता है उसे बिना आलोचना के आपके सामने रखता है।"], ["राह दिखाता है, दबाव नहीं डालता", "आपके पल के हिसाब से अगला सही क़दम सुझाता है: साँस का अभ्यास, कोई ध्वनि-मिश्रण, एक विराम, या शाम में छोटा-सा बदलाव।"], ["सही समय पर हाल पूछता है", "जिन पलों में आपको अक्सर मुश्किल होती है, उनके आसपास स्नेह भरे और सही समय पर संदेश, ताकि आप अकेले न रहें।"], ["क्या रखा जाए, यह आप तय करते हैं", "आप चुनते हैं कि वह क्या याद रखे और उसे भूलने को कह सकते हैं। आपकी कहानी आपकी ही रहती है।"]], soon_note: "यह पेशेवर से बातचीत के बीच रोज़मर्रा के सहारे के लिए एक एआई साथी है। यह लाइसेंसधारी थेरेपिस्ट नहीं है और आपात स्थिति के लिए नहीं है। संकट में हों तो अपने स्थानीय आपातकालीन नंबर या क्राइसिस हेल्पलाइन से संपर्क करें।",
 night: "रात मोड", day: "दिन मोड", unl: "चलता रहे", nav_dev: "डेवलपर", tag: "शांति की कीमत नहीं होनी चाहिए। यह सबके लिए मुफ़्त है।", cust_t: "अपनी पसंद की आवाज़ बनाएं", cust_d: "आग, बारिश, लहरें और सुर अपने हिसाब से मिलाएं", cust_n: "{n} चल रहे हैं। बदलने के लिए टैप करें", q_new: "एक और विचार", d_h: "प्रणव आर्य द्वारा बनाया गया", d_p1: "नमस्ते, मैं प्रणव हूं। मैंने Balance Tones इसलिए बनाया क्योंकि मैं लोगों को शांति महसूस करने में मदद करना चाहता था। दुनिया बहुत तेज़ भाग रही है, हमें धीमा होना होगा और अपने मन का संतुलन फिर से पाना होगा।", d_h5: "बैलेंस टोन क्या है", d_p5: "बैलेंस टोन ऐसी ध्वनि है जो इंसान के तंत्रिका तंत्र को वापस सामान्य और शांत अवस्था में लाने में मदद करती है। तनाव, शोर और स्क्रीन शरीर को हर समय सतर्क रखते हैं। एक स्थिर, कोमल आवाज़ उसे धीमा होने की इजाज़त देती है।", d_p6: "इस नाम का एक और अर्थ है। टोन यानी सुर, और टोन यानी किसी पल का एहसास, जैसे आवाज़ का लहजा या शरीर की स्थिति। संतुलन वह जगह है जो बहुत ज़्यादा और बहुत कम के बीच है, जागने और सोने के बीच, पकड़े रहने और छोड़ देने के बीच। बैलेंस टोन वहाँ पहुँचने की आवाज़ है। यह दुनिया से भागने की नहीं, खुद तक लौटने की बात है।", d_h2: "Balance Tones मुफ़्त क्यों है", d_p2: "ऐसे ऐप्स आमतौर पर बारिश की आवाज़ सुनने से पहले ही सब्सक्रिप्शन मांगते हैं। मुझे नहीं लगता कि शांति की कोई कीमत होनी चाहिए। Balance Tones सबके लिए मुफ़्त है, न अकाउंट, न विज्ञापन, न पेवॉल।", d_p3: "मैं चाहता हूं कि लोग कहीं भी हों और उनकी जेब कैसी भी हो, वे खुद को आज़ाद और शांत महसूस करें। अगर यह पेज किसी एक इंसान को थोड़ा बेहतर सुलाने या एक मुश्किल शाम काटने में मदद करता है, तो इसका काम पूरा हुआ।", d_h3: "ये आवाज़ें क्यों मायने रखती हैं", d_h4: "नमस्ते कहें", d_p4: "कोई गड़बड़ी मिली, कोई आवाज़ चाहिए, या बताना चाहते हैं कि Balance Tones से कैसे मदद मिली? मुझे सुनकर खुशी होगी।", d_site: "pranavarya.com देखें",
 nav_listen: "सुनें", nav_breathe: "साँस", nav_learn: "जानें",
 h1: "कमरे का शोर कम करें।",
@@ -1397,13 +1412,13 @@ function startSession(withSound) {
 }
 /* ---------- routes ---------- */
 let route = 'listen';
-const VIEWS = { listen: $('#v-listen'), breathe: $('#v-breathe'), learn: $('#v-learn'), developer: $('#v-developer') };
+const VIEWS = { listen: $('#v-listen'), breathe: $('#v-breathe'), learn: $('#v-learn'), developer: $('#v-developer'), soon: $('#v-soon') };
 function go(r) { location.hash = r === 'listen' ? '#/' : '#/' + r; }
 function applyRoute(first) {
   const h = location.hash.replace(/^#\/?/, '');
   route = VIEWS[h] ? h : 'listen';
   for (const k in VIEWS) VIEWS[k].hidden = k !== route;
-  document.body.classList.remove('route-listen', 'route-breathe', 'route-learn', 'route-developer');
+  document.body.classList.remove('route-listen', 'route-breathe', 'route-learn', 'route-developer', 'route-soon');
   document.body.classList.add('route-' + route);
   document.querySelectorAll('.nav a').forEach(a => {
     if (a.dataset.route === route) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
@@ -1694,6 +1709,8 @@ function renderLearn() {
 function renderDev() {
   const ul = $('#whyList'); ul.innerHTML = '';
   D().why.forEach(s => { const li = document.createElement('li'); li.textContent = s; ul.append(li); });
+  const sl = $('#soonList'); sl.innerHTML = '';
+  D().ui.soon_f.forEach(([t, d]) => { const li = document.createElement('li'), b = document.createElement('strong'); b.textContent = t; li.append(b, d); sl.append(li); });
 }
 /* ---------- quotes ---------- */
 let qOrder = [], qPos = 0, qTimer = 0;
