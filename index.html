@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..500,100&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script>try{if(localStorage.getItem("hush.night")==="1")document.documentElement.classList.add("night")}catch(e){}</script>
+<script>try{if(localStorage.getItem("hush.night")!=="0")document.documentElement.classList.add("night")}catch(e){}</script>
 <style>
 :root{
 --night:#0F1B24;--deep:#0A131A;--mist:#D5E0DE;--dim:#8DA0A8;--line:rgba(213,224,222,.14);
@@ -55,14 +55,6 @@ button{font-family:inherit}
 @media(max-width:560px){.nav{order:3;width:100%;justify-content:center;flex-wrap:wrap}}
 html.night{--night:#06080a;--deep:#030405;--mist:#CBBFAE;--dim:#8A8072;--line:rgba(203,191,174,.12)}
 html.night body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;background:linear-gradient(rgba(255,140,50,.09),rgba(255,140,50,.09)),rgba(0,0,0,.22)}
-.scenes{margin-top:1.6rem}
-.scenes h2{font:300 1.35rem/1.2 var(--serif);font-variation-settings:"SOFT" 100;margin:0 0 .8rem}
-#scenes{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.6rem}
-.scn{display:grid;gap:.15rem;text-align:left;background:rgba(213,224,222,.05);border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;color:var(--mist);cursor:pointer;font:inherit;transition:background .2s,border-color .2s}
-.scn b{font:400 1.05rem/1.2 var(--serif);font-variation-settings:"SOFT" 100}
-.scn small{color:var(--dim);font-size:.85rem;line-height:1.35}
-.scn:hover{background:rgba(213,224,222,.09)}
-.scn[aria-pressed=true]{background:rgba(213,224,222,.14);border-color:rgba(213,224,222,.4)}
 main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 1.25rem calc(var(--dock) + 2.5rem + env(safe-area-inset-bottom));display:flex;flex-direction:column}
 main>*{width:100%}
 main:focus{outline:none}
@@ -94,16 +86,17 @@ body.route-learn .quote,body.route-developer .quote{order:99;margin-top:2.2rem}
 .cust svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .cust b{display:block;font:400 1.15rem/1.25 var(--serif);font-variation-settings:"SOFT" 100}
 .cust small{display:block;color:var(--dim);font-size:.88rem;margin-top:.1rem}
-.gcard{position:relative;overflow:hidden;height:108px;padding:.7rem .8rem;border-radius:14px;border:1px solid var(--line);background:var(--deep);color:#fff;text-align:left;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;gap:.1rem;transition:border-color .2s,transform .25s}
-.gcard canvas{position:absolute;inset:0;width:100%;height:100%}
-.gcard::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,14,19,.9),rgba(8,14,19,0) 78%)}
-.gcard .gn,.gcard .gs{position:relative;z-index:1}
-.gcard .gn{font:500 .98rem/1.2 var(--sans)}
-.gcard .gs{font-size:.78rem;line-height:1.3;color:var(--mist);opacity:.8}
-.gcard:hover{border-color:var(--mist);transform:translateY(-2px)}
-.gcard[aria-pressed=true]{border-color:var(--mist);box-shadow:0 0 0 1px var(--mist)}
+.gcard,.scard{position:relative;overflow:hidden;height:108px;padding:.7rem .8rem;border-radius:14px;border:1px solid var(--line);background:var(--deep);color:#fff;text-align:left;cursor:pointer;display:flex;flex-direction:column;justify-content:flex-end;gap:.1rem;transition:border-color .2s,transform .25s}
+.sec{grid-column:1/-1;margin:.9rem 0 .1rem;font:300 1.3rem/1.2 var(--serif);font-variation-settings:"SOFT" 100}
+.gcard canvas,.scard canvas{position:absolute;inset:0;width:100%;height:100%}
+.gcard::after,.scard::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(8,14,19,.9),rgba(8,14,19,0) 78%)}
+.gcard .gn,.gcard .gs,.scard .gn,.scard .gs{position:relative;z-index:1}
+.gcard .gn,.scard .gn{font:500 .98rem/1.2 var(--sans)}
+.gcard .gs,.scard .gs{font-size:.78rem;line-height:1.3;color:var(--mist);opacity:.8}
+.scard:hover,.gcard:hover{border-color:var(--mist);transform:translateY(-2px)}
+.scard[aria-pressed=true],.gcard[aria-pressed=true]{border-color:var(--mist);box-shadow:0 0 0 1px var(--mist)}
 .eq{position:absolute;z-index:2;top:.6rem;right:.65rem;display:none;align-items:flex-end;gap:2px;height:14px;padding:5px 7px;border-radius:999px;background:rgba(10,19,26,.7);box-sizing:content-box}
-.gcard[aria-pressed=true] .eq{display:flex}
+.scard[aria-pressed=true] .eq,.gcard[aria-pressed=true] .eq{display:flex}
 .eq i{width:3px;height:14px;background:var(--mist);border-radius:2px;transform-origin:bottom;animation:eq 1s ease-in-out infinite}
 .eq i:nth-child(2){animation-delay:-.4s}.eq i:nth-child(3){animation-delay:-.7s}
 body.paused .eq i{animation-play-state:paused}
@@ -245,10 +238,6 @@ html{scroll-behavior:auto}
 </aside>
 <section class="view" id="v-listen">
 <div class="cards" id="cards" role="group" data-i18n-aria="aria_goals" aria-label="What do you need?"></div>
-<div class="scenes">
-<h2 data-i18n="scenes">Scenes</h2>
-<div id="scenes"></div>
-</div>
 </section>
 <section class="view page" id="v-breathe" hidden>
 <h2 data-i18n="b_rhythm">Choose a rhythm</h2>
@@ -1206,7 +1195,9 @@ if (!ctx || !bus) return;
 const n = ctx.currentTime;
 bus.gain.cancelScheduledValues(n); bus.gain.setValueAtTime(0, n);
 bus.gain.linearRampToValueAtTime(.2, n + 3);
-bus.gain.linearRampToValueAtTime(1, n + 33);
+bus.gain.linearRampToValueAtTime(.4, n + 18);
+bus.gain.linearRampToValueAtTime(.7, n + 36);
+bus.gain.linearRampToValueAtTime(1, n + 60);
 }
 function turnOn(s) {
 if (paused) { paused = false; if (ctx) ctx.resume(); if (ka) ka.play().catch(() => {}); }
@@ -1381,17 +1372,6 @@ timerChips.forEach(b => { if (b.dataset.min !== '0') b.textContent = T('min', { 
 $('#wakeBtn').hidden = !('wakeLock' in navigator);
 }
 function renderSheet() {
-const scenes = $('#scenes'); scenes.innerHTML = '';
-D().scenes.forEach(([n, sub], i) => {
-const b = document.createElement('button');
-b.type = 'button'; b.className = 'scn';
-b.innerHTML = '<b></b><small></small>'; b.querySelector('b').textContent = n; b.querySelector('small').textContent = sub;
-b.addEventListener('click', () => {
-if (anyOn() && !paused && lastMix === SCENES[i]) { stopAll(); return; }
-goalIdx = -1; applyMix(SCENES[i]);
-});
-scenes.append(b);
-});
 const pl = $('#playing'); pl.innerHTML = '<p class="none" id="noneMsg"></p>';
 const all = $('#allSounds'); all.innerHTML = '';
 GROUPS.forEach(g => {
@@ -1424,10 +1404,11 @@ if (s.on) { s.inp.value = s.vol * 100; s.inp.style.setProperty('--p', (s.vol * 1
 }
 const cardBox = $('#cards');
 const detail = document.createElement('div'); detail.className = 'detail'; detail.setAttribute('aria-live', 'polite');
-const TILE_C = { fire: ['#3b1f12', '#140e11'], rain: ['#1d3340', '#0e1a22'], sea: ['#17394a', '#0c1a24'], stream: ['#1b3a30', '#0d1b1a'], sleep: ['#2a2250', '#0e1020'], bowl: ['#2d2454', '#120f26'], wind: ['#27393f', '#0e1a20'], train: ['#2c2a3a', '#0e0f18'] };
-const TILE_N = { fire: 22, rain: 34, sea: 0, stream: 12, sleep: 26, bowl: 0, wind: 14, train: 10 };
-const SCENE_OF = ['sleep', 'wind', 'bowl', 'stream', 'sea', 'rain', 'fire', 'fire', 'sea', 'sleep', 'rain', 'wind', 'train', 'rain'];
-const SPEED = { fire: 3, rain: 9, stream: 1, sleep: .5, wind: 1.4, train: 1.2 };
+const TILE_C = { storm: ['#1a1f33', '#080b14'],  fire: ['#3b1f12', '#140e11'], rain: ['#1d3340', '#0e1a22'], sea: ['#17394a', '#0c1a24'], stream: ['#1b3a30', '#0d1b1a'], sleep: ['#2a2250', '#0e1020'], bowl: ['#2d2454', '#120f26'], wind: ['#27393f', '#0e1a20'], train: ['#2c2a3a', '#0e0f18'] };
+const TILE_N = { storm: 40,  fire: 22, rain: 34, sea: 0, stream: 12, sleep: 26, bowl: 0, wind: 14, train: 10 };
+const SCENE_OF = ['sleep', 'wind', 'bowl', 'stream', 'sea', 'rain', 'fire', 'fire', 'sea', 'sleep', 'rain', 'wind', 'train', 'storm'];
+const SCENE_TILE = ['fire', 'rain', 'sea', 'stream', 'sleep', 'storm', 'train'];
+const SPEED = { storm: 11, fire: 3, rain: 9, stream: 1, sleep: .5, wind: 1.4, train: 1.2 };
 let tiles = [], tileRO = null, tileIO = null;
 function tdot(g, px, py, r, col, a) {
 if (a <= .01) return;
@@ -1460,6 +1441,10 @@ g.beginPath(); g.arc(w * .5, h * .42, h * (.08 + .6 * u), 0, TAU); g.stroke();
 }
 tdot(g, w * .5, h * .42, 2.2 * k, '230,214,255', .8);
 }
+if (sc === 'storm') {
+const fl = Math.pow(Math.max(0, Math.sin(m * .9 + 1)), 30);
+g.fillStyle = 'rgba(200,215,255,' + (fl * .32) + ')'; g.fillRect(0, 0, w, h);
+}
 if (sc === 'train') {
 g.strokeStyle = 'rgba(213,224,222,.14)'; g.lineWidth = k;
 g.beginPath(); g.moveTo(0, h * .72); g.lineTo(w, h * .72); g.stroke();
@@ -1468,7 +1453,7 @@ const sp = SPEED[sc] || 1;
 tl.ps.forEach((p, i) => {
 const u = (p.o + m * p.v * sp) % 1;
 if (sc === 'fire') tdot(g, p.x * w + Math.sin(m * 1.5 + p.o * 9) * 6 * k, h * (1.05 - u * 1.1), p.r * k, '242,160,101', Math.sin(Math.PI * u) * .9);
-else if (sc === 'rain') {
+else if (sc === 'rain' || sc === 'storm') {
 const px = p.x * w - u * 16 * k, py = (u * 1.1 - .05) * h;
 g.strokeStyle = 'rgba(160,205,225,.45)'; g.lineWidth = k; g.beginPath(); g.moveTo(px, py); g.lineTo(px - 2 * k, py - 9 * k); g.stroke();
 } else if (sc === 'stream') {
@@ -1534,7 +1519,7 @@ b.addEventListener('click', () => startSession(false)); acts.append(b);
 let shownGoal = -2;
 function syncScenes() {
 const on = anyOn() && !paused;
-document.querySelectorAll('#scenes .scn').forEach((b, i) => b.setAttribute('aria-pressed', on && lastMix === SCENES[i] && goalIdx < 0));
+cardBox.querySelectorAll('.scard').forEach((b, i) => b.setAttribute('aria-pressed', on && lastMix === SCENES[i] && goalIdx < 0));
 }
 function syncCards() {
 syncScenes();
@@ -1574,6 +1559,20 @@ cu.innerHTML = '<span class="ci"><svg viewBox="0 0 24 24" aria-hidden="true"><pa
 cu.querySelector('b').textContent = T('cust_t');
 cu.addEventListener('click', openSheet);
 cardBox.append(cu);
+const sh = document.createElement('h2'); sh.className = 'sec'; sh.textContent = T('scenes'); cardBox.append(sh);
+D().scenes.forEach(([n, sub], i) => {
+const b = document.createElement('button');
+b.type = 'button'; b.className = 'scard'; b.setAttribute('aria-pressed', 'false');
+b.innerHTML = '<canvas aria-hidden="true"></canvas><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span class="gn"></span><span class="gs"></span>';
+b.querySelector('.gn').textContent = n; b.querySelector('.gs').textContent = sub;
+b.addEventListener('click', () => {
+if (anyOn() && !paused && lastMix === SCENES[i] && goalIdx < 0) { stopAll(); return; }
+goalIdx = -1; applyMix(SCENES[i]);
+});
+cardBox.append(b);
+addTile(b, SCENE_TILE[i]);
+});
+const gh = document.createElement('h2'); gh.className = 'sec'; gh.textContent = T('aria_goals'); cardBox.append(gh);
 D().goals.forEach((g, i) => {
 const b = document.createElement('button');
 b.type = 'button'; b.className = 'gcard'; b.setAttribute('aria-pressed', 'false');
@@ -1687,7 +1686,7 @@ const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = o
 if (save) store.set('night', on ? '1' : '0');
 }
 $('#nightBtn').addEventListener('click', () => setNight(!document.documentElement.classList.contains('night'), true));
-setNight(store.get('night') === '1', false);
+setNight(store.get('night') !== '0', false);
 document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => { lang = b.dataset.lang; store.set('lang', lang); renderAll(); }));
 const playBtn = $('#playBtn');
 playBtn.addEventListener('click', () => {
