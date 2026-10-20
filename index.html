@@ -162,6 +162,11 @@ a.chip{display:inline-block;text-decoration:none}
 .tw{position:relative}
 .pop{position:absolute;bottom:calc(100% + 12px);left:50%;transform:translateX(-50%);display:flex;gap:.4rem;padding:.5rem;background:var(--deep);border:1px solid var(--line);border-radius:16px;white-space:nowrap}
 .chip.sm{padding:.55rem .8rem;font-size:.85rem}
+.np{display:none;flex:0 1 230px;min-width:0;line-height:1.25}
+body.playing .np{display:block}
+.np-k{display:block;font-size:.68rem;color:var(--dim);letter-spacing:.02em}
+.np-n{display:block;font-size:.88rem;color:var(--mist);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:560px){.np{flex:1 1 auto}.dock-in{gap:.6rem;padding:0 .9rem}}
 .dvol{display:flex;align-items:center;flex:0 1 190px}
 @media(max-width:560px){.dvol{display:none}}
 /* range */
@@ -291,6 +296,7 @@ body.sleep #stage{display:grid!important}
       <svg id="icoPlay" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
       <svg id="icoPause" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z"/></svg>
     </button>
+    <div class="np" id="np" aria-live="polite"><span class="np-k" id="npK"></span><span class="np-n" id="npN"></span></div>
     <div class="tw">
       <button class="dbtn" type="button" id="timerBtn" aria-haspopup="true" aria-expanded="false" aria-label="Sleep timer">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9v4l2.5 2M9.5 3h5"/></svg>
@@ -357,7 +363,7 @@ wake: "Keep screen on", stop: "Stop all", off: "Off", min: "{n} min",
 sleep: "Sleep mode", sleep_exit: "Exit sleep mode", sleep_left: "Stops in {t}", sleep_hint: "Dims everything, keeps the circle, stops after 30 minutes",
 play: "Play", pause: "Pause", timer: "Sleep timer", close: "Close", remove: "Remove",
 none: "Nothing is playing. Pick a scene or a sound.",
-n_one: "1 sound playing", n_many: "{n} sounds playing", n_zero: "Nothing playing",
+n_one: "1 sound playing", n_many: "{n} sounds playing", n_zero: "Nothing playing", np: "Now playing", np_paused: "Paused",
 w_in: "Breathe in", w_hold: "Hold", w_out: "Breathe out", w_in2: "In again", w_slow: "Breathe slowly",
 playing_is: "Playing: {names}.", timer_set: "Set a {n} minute timer", timer_done: "Timer set for {n} minutes",
 guided: "Guided breathing, 3 minutes",
@@ -461,7 +467,7 @@ wake: "Bildschirm anlassen", stop: "Alles stoppen", off: "Aus", min: "{n} Min.",
 sleep: "Schlafmodus", sleep_exit: "Schlafmodus beenden", sleep_left: "Stoppt in {t}", sleep_hint: "Dunkelt alles ab, behält den Kreis und stoppt nach 30 Minuten",
 play: "Abspielen", pause: "Pause", timer: "Einschlaf-Timer", close: "Schließen", remove: "Entfernen",
 none: "Es läuft nichts. Wähle eine Szene oder einen Klang.",
-n_one: "1 Klang läuft", n_many: "{n} Klänge laufen", n_zero: "Es läuft nichts",
+n_one: "1 Klang läuft", n_many: "{n} Klänge laufen", n_zero: "Es läuft nichts", np: "Jetzt läuft", np_paused: "Pausiert",
 w_in: "Einatmen", w_hold: "Halten", w_out: "Ausatmen", w_in2: "Nochmal ein", w_slow: "Atme langsam",
 playing_is: "Läuft: {names}.", timer_set: "{n}-Minuten-Timer setzen", timer_done: "Timer auf {n} Minuten gestellt",
 guided: "Geführtes Atmen, 3 Minuten",
@@ -565,7 +571,7 @@ wake: "स्क्रीन चालू रखें", stop: "सब रोक
 sleep: "नींद मोड", sleep_exit: "नींद मोड बंद करें", sleep_left: "{t} में रुकेगा", sleep_hint: "सब कुछ धीमा करता है, घेरा रखता है, 30 मिनट बाद रुक जाता है",
 play: "चलाएँ", pause: "रोकें", timer: "नींद टाइमर", close: "बंद करें", remove: "हटाएँ",
 none: "कुछ नहीं चल रहा। कोई दृश्य या ध्वनि चुनें।",
-n_one: "1 ध्वनि चल रही है", n_many: "{n} ध्वनियाँ चल रही हैं", n_zero: "कुछ नहीं चल रहा",
+n_one: "1 ध्वनि चल रही है", n_many: "{n} ध्वनियाँ चल रही हैं", n_zero: "कुछ नहीं चल रहा", np: "अभी चल रहा है", np_paused: "रुका हुआ",
 w_in: "साँस अंदर", w_hold: "रोकें", w_out: "साँस बाहर", w_in2: "फिर अंदर", w_slow: "धीरे साँस लें",
 playing_is: "चल रहा है: {names}।", timer_set: "{n} मिनट का टाइमर लगाएँ", timer_done: "टाइमर {n} मिनट के लिए लगा",
 guided: "निर्देशित साँस, 3 मिनट",
@@ -1792,13 +1798,22 @@ $('#sleepBtn').addEventListener('click', enterSleep);
 $('#sleepExit').addEventListener('click', () => exitSleep(true));
 addEventListener('keydown', e => { if (e.key === 'Escape' && sleeping) exitSleep(true); });
 /* ---------- ui state ---------- */
+function updateNP() {
+  const on = sounds.filter(s => s.on);
+  if (!on.length) return;
+  const list = on.map(nm).join(', ');
+  const title = goalIdx >= 0 ? D().goals[goalIdx].n : sceneIdx >= 0 ? D().scenes[sceneIdx][0] : list;
+  $('#npK').textContent = paused ? T('np_paused') : T('np');
+  $('#npN').textContent = title;
+  $('#np').title = list;
+}
 const status = $('#status');
 function refresh() {
   const n = sounds.filter(s => s.on).length, on = n > 0 && !paused;
   document.body.classList.toggle('playing', n > 0);
   $('#icoPlay').toggleAttribute('hidden', on); $('#icoPause').toggleAttribute('hidden', !on);
   document.body.classList.toggle('paused', paused);
-  syncCards();
+  syncCards(); updateNP();
   playBtn.setAttribute('aria-label', T(on ? 'pause' : 'play'));
   const nm0 = $('#noneMsg'); if (nm0) { nm0.textContent = T('none'); nm0.hidden = n > 0; }
   status.textContent = n === 0 ? T('n_zero') : n === 1 ? T('n_one') : T('n_many', { n });
