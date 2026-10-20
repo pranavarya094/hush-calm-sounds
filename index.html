@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..500,100&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<script>try{if(localStorage.getItem("hush.night")!=="0")document.documentElement.classList.add("night")}catch(e){}</script>
+<script>try{if(localStorage.getItem("hush.night")==="1")document.documentElement.classList.add("night")}catch(e){}</script>
 <style>
 :root{
   --night:#0F1B24;--deep:#0A131A;--mist:#D5E0DE;--dim:#8DA0A8;--line:rgba(213,224,222,.14);
@@ -1821,7 +1821,7 @@ function setNight(on, save) {
   if (save) store.set('night', on ? '1' : '0');
 }
 $('#nightBtn').addEventListener('click', () => setNight(!document.documentElement.classList.contains('night'), true));
-setNight(store.get('night') !== '0', false);
+setNight(store.get('night') === '1', false);
 document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => { lang = b.dataset.lang; store.set('lang', lang); renderAll(); }));
 /* ---------- dock ---------- */
 const playBtn = $('#playBtn');
