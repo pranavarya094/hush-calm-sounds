@@ -46,18 +46,23 @@ button{font-family:inherit}
 .nav{display:flex;align-items:center;gap:.2rem}
 .nav a{color:var(--dim);text-decoration:none;font-size:.95rem;padding:.45rem .85rem;border-radius:999px;transition:color .2s,background .2s}
 .nav a:hover{color:var(--mist)}
+.nav button{background:none;border:0;font:inherit;color:var(--dim);font-size:.95rem;padding:.45rem .85rem;border-radius:999px;cursor:pointer;transition:color .2s,background .2s}
+.nav button:hover{color:var(--mist)}
 .nav a[aria-current=page]{color:var(--night);background:var(--mist)}
 .lang{display:flex;gap:.1rem}
 .lang button{background:none;border:0;color:var(--dim);font:500 .85rem/1 var(--sans);padding:.5rem;cursor:pointer;border-radius:8px}
 .lang button[aria-pressed=true]{color:var(--mist);text-decoration:underline;text-underline-offset:5px}
-@media(max-width:560px){.nav{order:3;width:100%;justify-content:center}}
-.nightbtn{background:none;border:0;color:var(--dim);cursor:pointer;display:grid;place-items:center;width:38px;height:38px;border-radius:50%;transition:color .2s,background .2s}
-.nightbtn svg{fill:none}
-.nightbtn:hover{color:var(--mist)}
-.nightbtn[aria-pressed=true]{color:var(--night);background:var(--mist)}
-.nightbtn[aria-pressed=true] svg{fill:currentColor}
+@media(max-width:560px){.nav{order:3;width:100%;justify-content:center;flex-wrap:wrap}}
 html.night{--night:#06080a;--deep:#030405;--mist:#CBBFAE;--dim:#8A8072;--line:rgba(203,191,174,.12)}
 html.night body::after{content:"";position:fixed;inset:0;z-index:90;pointer-events:none;background:linear-gradient(rgba(255,140,50,.09),rgba(255,140,50,.09)),rgba(0,0,0,.22)}
+.scenes{margin-top:1.6rem}
+.scenes h2{font:300 1.35rem/1.2 var(--serif);font-variation-settings:"SOFT" 100;margin:0 0 .8rem}
+#scenes{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.6rem}
+.scn{display:grid;gap:.15rem;text-align:left;background:rgba(213,224,222,.05);border:1px solid var(--line);border-radius:14px;padding:.8rem 1rem;color:var(--mist);cursor:pointer;font:inherit;transition:background .2s,border-color .2s}
+.scn b{font:400 1.05rem/1.2 var(--serif);font-variation-settings:"SOFT" 100}
+.scn small{color:var(--dim);font-size:.85rem;line-height:1.35}
+.scn:hover{background:rgba(213,224,222,.09)}
+.scn[aria-pressed=true]{background:rgba(213,224,222,.14);border-color:rgba(213,224,222,.4)}
 main{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 1.25rem calc(var(--dock) + 2.5rem + env(safe-area-inset-bottom));display:flex;flex-direction:column}
 main>*{width:100%}
 main:focus{outline:none}
@@ -214,13 +219,13 @@ html{scroll-behavior:auto}
 <a href="#/breathe" data-route="breathe" data-i18n="nav_breathe">Breathe</a>
 <a href="#/learn" data-route="learn" data-i18n="nav_learn">Learn</a>
 <a href="#/developer" data-route="developer" data-i18n="nav_dev">Developer</a>
+<button type="button" id="nightBtn" aria-pressed="false">Night mode</button>
 </nav>
 <div class="lang" role="group" aria-label="Language">
 <button type="button" data-lang="en" aria-pressed="true">EN</button>
 <button type="button" data-lang="de" aria-pressed="false">DE</button>
 <button type="button" data-lang="hi" aria-pressed="false">हिं</button>
 </div>
-<button type="button" class="nightbtn" id="nightBtn" aria-pressed="false" data-i18n-aria="night" aria-label="Night mode"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 1 0 16z" fill="currentColor"/></svg></button>
 </header>
 <main id="main" tabindex="-1">
 <section class="stage" id="stage">
@@ -240,6 +245,10 @@ html{scroll-behavior:auto}
 </aside>
 <section class="view" id="v-listen">
 <div class="cards" id="cards" role="group" data-i18n-aria="aria_goals" aria-label="What do you need?"></div>
+<div class="scenes">
+<h2 data-i18n="scenes">Scenes</h2>
+<div id="scenes"></div>
+</div>
 </section>
 <section class="view page" id="v-breathe" hidden>
 <h2 data-i18n="b_rhythm">Choose a rhythm</h2>
@@ -275,7 +284,6 @@ html{scroll-behavior:auto}
 <h2 data-i18n="d_h4">Say hello</h2>
 <p class="body" data-i18n="d_p4"></p>
 <p class="acts left"><a class="chip" href="https://pranavarya.com" target="_blank" rel="noopener" data-i18n="d_site">Visit pranavarya.com</a><a class="chip" href="https://github.com/pranavarya094/hush-calm-sounds/issues/new?title=Hello" target="_blank" rel="noopener" data-i18n="fb_b">Suggest on GitHub</a></p>
-<p class="fine" data-i18n="d_priv"></p>
 <p class="fine" data-i18n="disc">Balance Tones is a relaxation aid, not medical treatment.</p>
 </section>
 </main>
@@ -291,10 +299,10 @@ html{scroll-behavior:auto}
 <span id="timerLbl"></span>
 </button>
 <div class="pop" id="timerPop" role="group" aria-label="Sleep timer" hidden>
-<button class="chip sm" type="button" data-min="0" aria-pressed="true" data-i18n="off">Off</button>
 <button class="chip sm" type="button" data-min="15" aria-pressed="false">15</button>
 <button class="chip sm" type="button" data-min="30" aria-pressed="false">30</button>
 <button class="chip sm" type="button" data-min="60" aria-pressed="false">60</button>
+<button class="chip sm" type="button" data-min="0" aria-pressed="true" data-i18n="unl">Keep playing</button>
 </div>
 </div>
 <button class="dbtn" type="button" id="sleepBtn" aria-label="Sleep mode">
@@ -309,8 +317,6 @@ html{scroll-behavior:auto}
 <h2 id="sheetTitle" data-i18n="sounds">Sounds</h2>
 <button class="dbtn" type="button" id="sheetClose" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
 </div>
-<h3 data-i18n="scenes">Scenes</h3>
-<div class="chips" id="scenes"></div>
 <h3 data-i18n="now">Playing now</h3>
 <div id="playing"></div>
 <h3 data-i18n="all">All sounds</h3>
@@ -340,7 +346,7 @@ set(k, v) { try { localStorage.setItem('hush.' + k, v); } catch (e) {} }
 const I18N = {
 en: {
 ui: {
-night: "Night mode", nav_dev: "Developer", tag: "Peace should not be paid for. It is free, for everyone.", cust_t: "Customize your own sound", cust_d: "Mix fire, rain, waves and tones to taste", cust_n: "{n} playing. Tap to adjust", q_new: "Another quote", d_h: "Made by Pranav Arya", d_p1: "Hi, I'm Pranav. I built Balance Tones because I wanted one quiet corner of the internet that asks nothing from you.", d_h5: "What a balance tone is", d_p5: "A balance tone is a sound that helps bring a human nervous system back to normal and at peace. Stress, noise and screens keep the body switched on. A steady, gentle sound gives it permission to switch down.", d_p6: "The name carries a second meaning. A tone is a pitch, and it is also the feel of a moment, like the tone of a voice or the tone of the body. Balance is the place between too much and too little, between alert and asleep, between holding on and letting go. A balance tone is the sound of arriving there. It is less about escaping the world than about returning to yourself.", d_h2: "Why Balance Tones is free", d_p2: "Apps like this usually charge a subscription before you can even hear the rain. I don't think peace should have a price. Balance Tones is free for everyone, with no account, no ads and no paywall.", d_p3: "I want people to feel free and at peace, wherever they are and whatever they can afford. If this page helps one person sleep a little better or get through a hard evening, it has done its job.", d_h3: "Why these sounds matter", d_h4: "Say hello", d_p4: "Found a bug, missing a sound, or want to tell me how Balance Tones helped? I would love to hear it.", d_site: "Visit pranavarya.com", d_priv: "A note on privacy: every sound is made in your browser and nothing you play is recorded. To see how many people use Balance Tones and from which countries, the site notes the approximate city and country of a visit. No name, no email, no audio.",
+night: "Night mode", day: "Day mode", unl: "Keep playing", nav_dev: "Developer", tag: "Peace should not be paid for. It is free, for everyone.", cust_t: "Customize your own sound", cust_d: "Mix fire, rain, waves and tones to taste", cust_n: "{n} playing. Tap to adjust", q_new: "Another quote", d_h: "Made by Pranav Arya", d_p1: "Hi, I'm Pranav. I built Balance Tones because I wanted to help people feel at peace. The world is moving too fast, we need to slow down and regain a balance of our minds.", d_h5: "What a balance tone is", d_p5: "A balance tone is a sound that helps bring a human nervous system back to normal and at peace. Stress, noise and screens keep the body switched on. A steady, gentle sound gives it permission to switch down.", d_p6: "The name carries a second meaning. A tone is a pitch, and it is also the feel of a moment, like the tone of a voice or the tone of the body. Balance is the place between too much and too little, between alert and asleep, between holding on and letting go. A balance tone is the sound of arriving there. It is less about escaping the world than about returning to yourself.", d_h2: "Why Balance Tones is free", d_p2: "Apps like this usually charge a subscription before you can even hear the rain. I don't think peace should have a price. Balance Tones is free for everyone, with no account, no ads and no paywall.", d_p3: "I want people to feel free and at peace, wherever they are and whatever they can afford. If this page helps one person sleep a little better or get through a hard evening, it has done its job.", d_h3: "Why these sounds matter", d_h4: "Say hello", d_p4: "Found a bug, missing a sound, or want to tell me how Balance Tones helped? I would love to hear it.", d_site: "Visit pranavarya.com",
 nav_listen: "Listen", nav_breathe: "Breathe", nav_learn: "Learn",
 h1: "Turn the room down.",
 lede: "Fire, water, wind and steady tones, made in your browser.",
@@ -374,16 +380,16 @@ rooms: ["Places", "Sounds of a room or a journey."], noise: ["Noise", "An even h
 tones: ["Tones", "Pure pitches for winding down. Binaural beats need headphones."]
 },
 snd: {
-frogs: ["Pond frogs", "Croaks and peeps by a still pond"], owl: ["Owl", "A distant hoot in the night woods"], purr: ["Cat purring", "A slow, warm rumble"],
+frogs: ["Pond frogs", "Croaks and peeps by a still pond"], purr: ["Cat purring", "A slow, warm rumble"],
 whale: ["Whale song", "Long calls drifting through deep water"], cicadas: ["Cicadas", "A warm hum on a summer afternoon"], chimes: ["Wind chimes", "Soft bells in a light breeze"],
 clock: ["Ticking clock", "A slow, steady tick-tock"], windowrain: ["Rain on a window", "Drops on glass, in a warm room"], library: ["Quiet library", "Room tone and the odd page turning"],
-rainycafe: ["Rainy café", "Low voices, clinks and rain outside"], trainrain: ["Train in the rain", "Wheels on rails, rain on the roof"],
+trainrain: ["Train in the rain", "Wheels on rails, rain on the roof"],
 campfire: ["Campfire", "A low roar with snapping logs"], embers: ["Embers", "A quiet glow with a pop now and then"],
 rain: ["Rain", "Steady rain on a roof"], stream: ["Stream", "Shallow water over stones"], waves: ["Ocean waves", "Slow swells, about nine seconds apart"],
 wind: ["Wind", "Soft wind through trees"], thunder: ["Distant thunder", "Far-off rumbles, every so often"], storm: ["Thunderstorm", "Heavy rain with close thunder"],
 crickets: ["Night crickets", "A summer field after sunset"], birds: ["Birdsong", "Morning birds in the trees"],
 heartbeat: ["Heartbeat", "A slow, steady pulse, about 60 a minute"], train: ["Night train", "Rolling wheels and a soft clack"],
-cafe: ["Café", "Low voices and the odd clink"], fan: ["Ceiling fan", "A soft, even whirr"],
+fan: ["Ceiling fan", "A soft, even whirr"],
 white: ["White noise", "Bright and even"], pink: ["Pink noise", "Softer, like a far-off waterfall"], brown: ["Brown noise", "Deep and rounded, like a distant engine"],
 bowl: ["Singing bowl", "A struck bowl, ringing out every ten seconds or so"],
 delta: ["Delta beat", "2.5 Hz binaural beat. Headphones needed."], theta: ["Theta beat", "6 Hz binaural beat. Headphones needed."],
@@ -404,7 +410,8 @@ goals: [
 { n: "Baby", s: "Soothe an infant", w: "A steady shushing-like sound is a common way to settle infants, because it resembles sounds from the womb.", t: "Keep it quiet and put the device across the room, never in the crib.", c: "Ask your pediatrician about safe sound levels for your baby. Do not play it all night at a loud volume." },
 { n: "Rainy day", s: "Cozy indoors", w: "Rain with distant thunder and a warm fire is a mix many people find cozy.", t: "Pair it with a hot drink and a blanket." },
 { n: "Noisy place", s: "Block a loud room", w: "Deep, steady noise covers speech and traffic better than quiet does, so you notice them less.", t: "Raise the volume just enough to blur the voices, and no more." },
-{ n: "Travel", s: "Trains, planes, waiting", w: "A steady rolling sound covers announcements and chatter, and feels familiar when you are away from home.", t: "Use headphones in public, and keep the volume low enough to hear announcements." }
+{ n: "Travel", s: "Trains, planes, waiting", w: "A steady rolling sound covers announcements and chatter, and feels familiar when you are away from home.", t: "Use headphones in public, and keep the volume low enough to hear announcements." },
+{ n: "Thunderstorm", s: "Rain and rolling thunder", w: "A steady storm gives a busy mind something big and far away to listen to, and the rain covers small sudden noises.", t: "Start quiet. Thunder is meant to roll in the distance, so keep it soft enough that it never startles you." },
 ],
 pats: {
 calm: ["Calm", "7 in, 5 hold, 7 out. Slow and steady, a good everyday rhythm."],
@@ -434,7 +441,7 @@ tips: [
 },
 de: {
 ui: {
-night: "Nachtmodus", nav_dev: "Entwickler", tag: "Frieden sollte nichts kosten. Er ist frei, für alle.", cust_t: "Gestalte deinen eigenen Klang", cust_d: "Mische Feuer, Regen, Wellen und Töne nach Geschmack", cust_n: "{n} aktiv. Tippen zum Anpassen", q_new: "Noch ein Zitat", d_h: "Von Pranav Arya", d_p1: "Hallo, ich bin Pranav. Ich habe Balance Tones gebaut, weil ich eine ruhige Ecke im Internet wollte, die nichts von dir verlangt.", d_h5: "Was ein Balance Tone ist", d_p5: "Ein Balance Tone ist ein Klang, der das menschliche Nervensystem wieder ins Gleichgewicht und zur Ruhe bringen kann. Stress, Lärm und Bildschirme halten den Körper im Dauerbetrieb. Ein gleichmäßiger, sanfter Klang erlaubt ihm, herunterzufahren.", d_p6: "Der Name hat eine zweite Bedeutung. Ein Ton ist eine Tonhöhe, aber auch die Stimmung eines Moments, wie der Tonfall einer Stimme oder die Spannung des Körpers. Balance ist der Raum zwischen zu viel und zu wenig, zwischen wach und müde, zwischen festhalten und loslassen. Ein Balance Tone ist der Klang des Ankommens dort. Es geht weniger darum, der Welt zu entfliehen, als zu sich selbst zurückzufinden.", d_h2: "Warum Balance Tones kostenlos ist", d_p2: "Solche Apps verlangen meist ein Abo, bevor man auch nur den Regen hört. Ich finde nicht, dass Ruhe einen Preis haben sollte. Balance Tones ist für alle kostenlos, ohne Konto, ohne Werbung und ohne Bezahlschranke.", d_p3: "Ich möchte, dass Menschen sich frei und friedlich fühlen, egal wo sie sind und was sie sich leisten können. Wenn diese Seite einem einzigen Menschen hilft, etwas besser zu schlafen oder einen schweren Abend zu überstehen, hat sie ihren Zweck erfüllt.", d_h3: "Warum diese Klänge wichtig sind", d_h4: "Sag Hallo", d_p4: "Einen Fehler gefunden, einen Klang vermisst oder möchtest du mir erzählen, wie Balance Tones dir geholfen hat? Ich freue mich darauf, es zu hören.", d_site: "pranavarya.com besuchen", d_priv: "Hinweis zum Datenschutz: Alle Klänge entstehen in deinem Browser, nichts davon wird aufgezeichnet. Um zu sehen, wie viele Menschen Balance Tones aus welchen Ländern nutzen, erfasst die Seite ungefähr Stadt und Land eines Besuchs. Kein Name, keine E-Mail, kein Audio.",
+night: "Nachtmodus", day: "Tagmodus", unl: "Weiterspielen", nav_dev: "Entwickler", tag: "Frieden sollte nichts kosten. Er ist frei, für alle.", cust_t: "Gestalte deinen eigenen Klang", cust_d: "Mische Feuer, Regen, Wellen und Töne nach Geschmack", cust_n: "{n} aktiv. Tippen zum Anpassen", q_new: "Noch ein Zitat", d_h: "Von Pranav Arya", d_p1: "Hallo, ich bin Pranav. Ich habe Balance Tones gebaut, weil ich Menschen helfen wollte, zur Ruhe zu kommen. Die Welt dreht sich zu schnell, wir müssen langsamer werden und das Gleichgewicht unseres Geistes zurückgewinnen.", d_h5: "Was ein Balance Tone ist", d_p5: "Ein Balance Tone ist ein Klang, der das menschliche Nervensystem wieder ins Gleichgewicht und zur Ruhe bringen kann. Stress, Lärm und Bildschirme halten den Körper im Dauerbetrieb. Ein gleichmäßiger, sanfter Klang erlaubt ihm, herunterzufahren.", d_p6: "Der Name hat eine zweite Bedeutung. Ein Ton ist eine Tonhöhe, aber auch die Stimmung eines Moments, wie der Tonfall einer Stimme oder die Spannung des Körpers. Balance ist der Raum zwischen zu viel und zu wenig, zwischen wach und müde, zwischen festhalten und loslassen. Ein Balance Tone ist der Klang des Ankommens dort. Es geht weniger darum, der Welt zu entfliehen, als zu sich selbst zurückzufinden.", d_h2: "Warum Balance Tones kostenlos ist", d_p2: "Solche Apps verlangen meist ein Abo, bevor man auch nur den Regen hört. Ich finde nicht, dass Ruhe einen Preis haben sollte. Balance Tones ist für alle kostenlos, ohne Konto, ohne Werbung und ohne Bezahlschranke.", d_p3: "Ich möchte, dass Menschen sich frei und friedlich fühlen, egal wo sie sind und was sie sich leisten können. Wenn diese Seite einem einzigen Menschen hilft, etwas besser zu schlafen oder einen schweren Abend zu überstehen, hat sie ihren Zweck erfüllt.", d_h3: "Warum diese Klänge wichtig sind", d_h4: "Sag Hallo", d_p4: "Einen Fehler gefunden, einen Klang vermisst oder möchtest du mir erzählen, wie Balance Tones dir geholfen hat? Ich freue mich darauf, es zu hören.", d_site: "pranavarya.com besuchen",
 nav_listen: "Hören", nav_breathe: "Atmen", nav_learn: "Wissen",
 h1: "Dreh den Raum leiser.",
 lede: "Feuer, Wasser, Wind und ruhige Töne, direkt in deinem Browser erzeugt.",
@@ -468,16 +475,16 @@ rooms: ["Orte", "Klänge eines Raums oder einer Reise."], noise: ["Rauschen", "E
 tones: ["Töne", "Reine Töne zum Abschalten. Binaurale Beats brauchen Kopfhörer."]
 },
 snd: {
-frogs: ["Teichfrösche", "Quaken und Piepen an einem stillen Teich"], owl: ["Eule", "Ein fernes Rufen im nächtlichen Wald"], purr: ["Schnurrende Katze", "Ein langsames, warmes Brummen"],
+frogs: ["Teichfrösche", "Quaken und Piepen an einem stillen Teich"], purr: ["Schnurrende Katze", "Ein langsames, warmes Brummen"],
 whale: ["Walgesang", "Lange Rufe im tiefen Wasser"], cicadas: ["Zikaden", "Ein warmes Summen an einem Sommernachmittag"], chimes: ["Windspiel", "Sanfte Glöckchen in leichtem Wind"],
 clock: ["Tickende Uhr", "Ein langsames, gleichmäßiges Ticken"], windowrain: ["Regen am Fenster", "Tropfen auf Glas, in einem warmen Raum"], library: ["Stille Bibliothek", "Raumklang und ab und zu eine umgeblätterte Seite"],
-rainycafe: ["Café im Regen", "Leise Stimmen, Klirren und Regen draußen"], trainrain: ["Zug im Regen", "Räder auf Schienen, Regen auf dem Dach"],
+trainrain: ["Zug im Regen", "Räder auf Schienen, Regen auf dem Dach"],
 campfire: ["Lagerfeuer", "Ein tiefes Brausen mit knackenden Scheiten"], embers: ["Glut", "Ein stilles Glimmen mit gelegentlichem Knacken"],
 rain: ["Regen", "Gleichmäßiger Regen auf dem Dach"], stream: ["Bach", "Flaches Wasser über Steinen"], waves: ["Meereswellen", "Langsame Dünung, etwa alle neun Sekunden"],
 wind: ["Wind", "Sanfter Wind in den Bäumen"], thunder: ["Fernes Donnern", "Entferntes Grollen, hin und wieder"], storm: ["Gewitter", "Starker Regen mit nahem Donner"],
 crickets: ["Grillen", "Ein Sommerfeld nach Sonnenuntergang"], birds: ["Vogelgesang", "Morgendliche Vögel in den Bäumen"],
 heartbeat: ["Herzschlag", "Ein langsamer, ruhiger Puls, etwa 60 pro Minute"], train: ["Nachtzug", "Rollende Räder und ein leises Klacken"],
-cafe: ["Café", "Leise Stimmen und gelegentliches Klirren"], fan: ["Deckenventilator", "Ein sanftes, gleichmäßiges Surren"],
+fan: ["Deckenventilator", "Ein sanftes, gleichmäßiges Surren"],
 white: ["Weißes Rauschen", "Hell und gleichmäßig"], pink: ["Rosa Rauschen", "Weicher, wie ein ferner Wasserfall"], brown: ["Braunes Rauschen", "Tief und rund, wie ein ferner Motor"],
 bowl: ["Klangschale", "Eine angeschlagene Schale, die etwa alle zehn Sekunden klingt"],
 delta: ["Delta-Beat", "2,5 Hz binauraler Beat. Kopfhörer nötig."], theta: ["Theta-Beat", "6 Hz binauraler Beat. Kopfhörer nötig."],
@@ -498,7 +505,8 @@ goals: [
 { n: "Baby", s: "Ein Baby beruhigen", w: "Ein gleichmäßiges, schhh-artiges Geräusch beruhigt Säuglinge häufig, weil es Geräuschen aus dem Mutterleib ähnelt.", t: "Halte es leise und stelle das Gerät auf die andere Seite des Raums, nie ins Bettchen.", c: "Frage deine Kinderärztin oder deinen Kinderarzt nach sicheren Lautstärken für dein Baby. Spiele es nicht laut die ganze Nacht." },
 { n: "Regentag", s: "Gemütlich drinnen", w: "Regen mit fernem Donner und einem warmen Feuer ist eine Mischung, die viele Menschen gemütlich finden.", t: "Dazu ein heißes Getränk und eine Decke." },
 { n: "Laute Umgebung", s: "Einen lauten Raum ausblenden", w: "Tiefes, gleichmäßiges Rauschen überdeckt Sprache und Verkehr besser als Stille, sodass du sie weniger wahrnimmst.", t: "Erhöhe die Lautstärke nur so weit, dass Stimmen verschwimmen, nicht mehr." },
-{ n: "Unterwegs", s: "Zug, Flug, Warten", w: "Ein gleichmäßig rollender Klang überdeckt Durchsagen und Gespräche und wirkt vertraut, wenn du von zu Hause weg bist.", t: "Nutze in der Öffentlichkeit Kopfhörer und halte es leise genug, um Durchsagen zu hören." }
+{ n: "Unterwegs", s: "Zug, Flug, Warten", w: "Ein gleichmäßig rollender Klang überdeckt Durchsagen und Gespräche und wirkt vertraut, wenn du von zu Hause weg bist.", t: "Nutze in der Öffentlichkeit Kopfhörer und halte es leise genug, um Durchsagen zu hören." },
+{ n: "Gewitter", s: "Regen und rollender Donner", w: "Ein gleichmäßiges Gewitter gibt einem unruhigen Geist etwas Großes, Fernes zum Zuhören, und der Regen überdeckt kleine, plötzliche Geräusche.", t: "Fang leise an. Donner soll in der Ferne rollen, halte ihn so leise, dass er dich nie erschreckt." },
 ],
 pats: {
 calm: ["Ruhig", "7 ein, 5 halten, 7 aus. Langsam und gleichmäßig, ein guter Alltagsrhythmus."],
@@ -528,7 +536,7 @@ tips: [
 },
 hi: {
 ui: {
-night: "रात मोड", nav_dev: "डेवलपर", tag: "शांति की कीमत नहीं होनी चाहिए। यह सबके लिए मुफ़्त है।", cust_t: "अपनी पसंद की आवाज़ बनाएं", cust_d: "आग, बारिश, लहरें और सुर अपने हिसाब से मिलाएं", cust_n: "{n} चल रहे हैं। बदलने के लिए टैप करें", q_new: "एक और विचार", d_h: "प्रणव आर्य द्वारा बनाया गया", d_p1: "नमस्ते, मैं प्रणव हूं। मैंने Balance Tones इसलिए बनाया क्योंकि मैं इंटरनेट पर एक ऐसा शांत कोना चाहता था जो आपसे कुछ न मांगे।", d_h5: "बैलेंस टोन क्या है", d_p5: "बैलेंस टोन ऐसी ध्वनि है जो इंसान के तंत्रिका तंत्र को वापस सामान्य और शांत अवस्था में लाने में मदद करती है। तनाव, शोर और स्क्रीन शरीर को हर समय सतर्क रखते हैं। एक स्थिर, कोमल आवाज़ उसे धीमा होने की इजाज़त देती है।", d_p6: "इस नाम का एक और अर्थ है। टोन यानी सुर, और टोन यानी किसी पल का एहसास, जैसे आवाज़ का लहजा या शरीर की स्थिति। संतुलन वह जगह है जो बहुत ज़्यादा और बहुत कम के बीच है, जागने और सोने के बीच, पकड़े रहने और छोड़ देने के बीच। बैलेंस टोन वहाँ पहुँचने की आवाज़ है। यह दुनिया से भागने की नहीं, खुद तक लौटने की बात है।", d_h2: "Balance Tones मुफ़्त क्यों है", d_p2: "ऐसे ऐप्स आमतौर पर बारिश की आवाज़ सुनने से पहले ही सब्सक्रिप्शन मांगते हैं। मुझे नहीं लगता कि शांति की कोई कीमत होनी चाहिए। Balance Tones सबके लिए मुफ़्त है, न अकाउंट, न विज्ञापन, न पेवॉल।", d_p3: "मैं चाहता हूं कि लोग कहीं भी हों और उनकी जेब कैसी भी हो, वे खुद को आज़ाद और शांत महसूस करें। अगर यह पेज किसी एक इंसान को थोड़ा बेहतर सुलाने या एक मुश्किल शाम काटने में मदद करता है, तो इसका काम पूरा हुआ।", d_h3: "ये आवाज़ें क्यों मायने रखती हैं", d_h4: "नमस्ते कहें", d_p4: "कोई गड़बड़ी मिली, कोई आवाज़ चाहिए, या बताना चाहते हैं कि Balance Tones से कैसे मदद मिली? मुझे सुनकर खुशी होगी।", d_site: "pranavarya.com देखें", d_priv: "निजता पर एक बात: सारी आवाज़ें आपके ब्राउज़र में ही बनती हैं और आप जो सुनते हैं वह रिकॉर्ड नहीं होता। यह जानने के लिए कि कितने लोग किन देशों से Balance Tones इस्तेमाल करते हैं, साइट हर विज़िट का मोटा-मोटा शहर और देश दर्ज करती है। कोई नाम, ईमेल या ऑडियो नहीं।",
+night: "रात मोड", day: "दिन मोड", unl: "चलता रहे", nav_dev: "डेवलपर", tag: "शांति की कीमत नहीं होनी चाहिए। यह सबके लिए मुफ़्त है।", cust_t: "अपनी पसंद की आवाज़ बनाएं", cust_d: "आग, बारिश, लहरें और सुर अपने हिसाब से मिलाएं", cust_n: "{n} चल रहे हैं। बदलने के लिए टैप करें", q_new: "एक और विचार", d_h: "प्रणव आर्य द्वारा बनाया गया", d_p1: "नमस्ते, मैं प्रणव हूं। मैंने Balance Tones इसलिए बनाया क्योंकि मैं लोगों को शांति महसूस करने में मदद करना चाहता था। दुनिया बहुत तेज़ भाग रही है, हमें धीमा होना होगा और अपने मन का संतुलन फिर से पाना होगा।", d_h5: "बैलेंस टोन क्या है", d_p5: "बैलेंस टोन ऐसी ध्वनि है जो इंसान के तंत्रिका तंत्र को वापस सामान्य और शांत अवस्था में लाने में मदद करती है। तनाव, शोर और स्क्रीन शरीर को हर समय सतर्क रखते हैं। एक स्थिर, कोमल आवाज़ उसे धीमा होने की इजाज़त देती है।", d_p6: "इस नाम का एक और अर्थ है। टोन यानी सुर, और टोन यानी किसी पल का एहसास, जैसे आवाज़ का लहजा या शरीर की स्थिति। संतुलन वह जगह है जो बहुत ज़्यादा और बहुत कम के बीच है, जागने और सोने के बीच, पकड़े रहने और छोड़ देने के बीच। बैलेंस टोन वहाँ पहुँचने की आवाज़ है। यह दुनिया से भागने की नहीं, खुद तक लौटने की बात है।", d_h2: "Balance Tones मुफ़्त क्यों है", d_p2: "ऐसे ऐप्स आमतौर पर बारिश की आवाज़ सुनने से पहले ही सब्सक्रिप्शन मांगते हैं। मुझे नहीं लगता कि शांति की कोई कीमत होनी चाहिए। Balance Tones सबके लिए मुफ़्त है, न अकाउंट, न विज्ञापन, न पेवॉल।", d_p3: "मैं चाहता हूं कि लोग कहीं भी हों और उनकी जेब कैसी भी हो, वे खुद को आज़ाद और शांत महसूस करें। अगर यह पेज किसी एक इंसान को थोड़ा बेहतर सुलाने या एक मुश्किल शाम काटने में मदद करता है, तो इसका काम पूरा हुआ।", d_h3: "ये आवाज़ें क्यों मायने रखती हैं", d_h4: "नमस्ते कहें", d_p4: "कोई गड़बड़ी मिली, कोई आवाज़ चाहिए, या बताना चाहते हैं कि Balance Tones से कैसे मदद मिली? मुझे सुनकर खुशी होगी।", d_site: "pranavarya.com देखें",
 nav_listen: "सुनें", nav_breathe: "साँस", nav_learn: "जानें",
 h1: "कमरे का शोर कम करें।",
 lede: "आग, पानी, हवा और स्थिर स्वर, सीधे आपके ब्राउज़र में बने।",
@@ -562,16 +570,16 @@ rooms: ["जगहें", "किसी कमरे या सफ़र की
 tones: ["स्वर", "आराम के लिए शुद्ध स्वर। बाइनॉरल बीट्स के लिए हेडफ़ोन चाहिए।"]
 },
 snd: {
-frogs: ["तालाब के मेंढक", "शांत तालाब के किनारे टर्र-टर्र और छोटी चहचहाहट"], owl: ["उल्लू", "रात के जंगल में दूर से आती हूक"], purr: ["बिल्ली की गुरगुर", "धीमी, गर्म घरघराहट"],
+frogs: ["तालाब के मेंढक", "शांत तालाब के किनारे टर्र-टर्र और छोटी चहचहाहट"], purr: ["बिल्ली की गुरगुर", "धीमी, गर्म घरघराहट"],
 whale: ["व्हेल का गान", "गहरे पानी में बहती लंबी पुकारें"], cicadas: ["सिकाडा", "गर्मी की दोपहर की गर्म गुनगुनाहट"], chimes: ["विंड चाइम", "हल्की हवा में कोमल घंटियाँ"],
 clock: ["टिक-टिक घड़ी", "धीमी, स्थिर टिक-टिक"], windowrain: ["खिड़की पर बारिश", "शीशे पर बूँदें, एक गर्म कमरे में"], library: ["शांत पुस्तकालय", "कमरे की ख़ामोशी और कभी-कभी पलटता पन्ना"],
-rainycafe: ["बारिश में कैफ़े", "धीमी आवाज़ें, खनक और बाहर बारिश"], trainrain: ["बारिश में ट्रेन", "पटरियों पर पहिये, छत पर बारिश"],
+trainrain: ["बारिश में ट्रेन", "पटरियों पर पहिये, छत पर बारिश"],
 campfire: ["अलाव", "धीमी गरज और चटकती लकड़ियाँ"], embers: ["अंगारे", "शांत चमक और बीच-बीच में चटक"],
 rain: ["बारिश", "छत पर लगातार बारिश"], stream: ["झरना", "पत्थरों पर बहता उथला पानी"], waves: ["समुद्र की लहरें", "धीमी लहरें, लगभग नौ सेकंड के अंतर पर"],
 wind: ["हवा", "पेड़ों में से गुज़रती कोमल हवा"], thunder: ["दूर की गड़गड़ाहट", "दूर की गरज, कभी-कभी"], storm: ["तूफ़ान", "तेज़ बारिश और पास की गड़गड़ाहट"],
 crickets: ["रात के झींगुर", "सूर्यास्त के बाद गर्मियों का खेत"], birds: ["पक्षियों का गान", "पेड़ों में सुबह की चिड़ियाँ"],
 heartbeat: ["धड़कन", "धीमी, स्थिर धड़कन, लगभग 60 प्रति मिनट"], train: ["रात की ट्रेन", "चलते पहिये और हल्की खट-खट"],
-cafe: ["कैफ़े", "धीमी बातचीत और कभी-कभी बर्तनों की खनक"], fan: ["छत का पंखा", "कोमल, एक समान घरघराहट"],
+fan: ["छत का पंखा", "कोमल, एक समान घरघराहट"],
 white: ["सफ़ेद शोर", "तेज़ और एक समान"], pink: ["गुलाबी शोर", "नरम, दूर के झरने जैसा"], brown: ["भूरा शोर", "गहरा और गोल, दूर के इंजन जैसा"],
 bowl: ["सिंगिंग बाउल", "बजाया गया कटोरा, लगभग हर दस सेकंड में गूँजता है"],
 delta: ["डेल्टा बीट", "2.5 Hz बाइनॉरल बीट। हेडफ़ोन ज़रूरी।"], theta: ["थीटा बीट", "6 Hz बाइनॉरल बीट। हेडफ़ोन ज़रूरी।"],
@@ -592,7 +600,8 @@ goals: [
 { n: "शिशु", s: "बच्चे को शांत करें", w: "स्थिर 'श्श्श' जैसी आवाज़ शिशुओं को शांत करने का आम तरीका है, क्योंकि यह गर्भ की आवाज़ों जैसी होती है।", t: "आवाज़ कम रखें और डिवाइस को कमरे के दूसरे छोर पर रखें, पालने में कभी नहीं।", c: "अपने बच्चे के लिए सुरक्षित आवाज़ के स्तर के बारे में बाल रोग विशेषज्ञ से पूछें। इसे पूरी रात तेज़ आवाज़ में न चलाएँ।" },
 { n: "बारिश का दिन", s: "घर में आराम से", w: "दूर की गरज और गर्म आग के साथ बारिश ऐसा मिश्रण है जो कई लोगों को आरामदेह लगता है।", t: "इसके साथ गर्म पेय और कंबल लें।" },
 { n: "शोरगुल वाली जगह", s: "तेज़ कमरे को ढकें", w: "गहरा, स्थिर शोर बातचीत और ट्रैफ़िक को चुप्पी से बेहतर ढकता है, इसलिए वे कम सुनाई देते हैं।", t: "आवाज़ बस इतनी बढ़ाएँ कि लोगों की बातें धुंधली हो जाएँ, उससे ज़्यादा नहीं।" },
-{ n: "सफ़र", s: "ट्रेन, उड़ान, इंतज़ार", w: "लगातार चलती आवाज़ घोषणाओं और बातचीत को ढक देती है और घर से दूर होने पर जानी-पहचानी लगती है।", t: "सार्वजनिक जगह पर हेडफ़ोन लगाएँ और आवाज़ इतनी कम रखें कि घोषणाएँ सुनाई दें।" }
+{ n: "सफ़र", s: "ट्रेन, उड़ान, इंतज़ार", w: "लगातार चलती आवाज़ घोषणाओं और बातचीत को ढक देती है और घर से दूर होने पर जानी-पहचानी लगती है।", t: "सार्वजनिक जगह पर हेडफ़ोन लगाएँ और आवाज़ इतनी कम रखें कि घोषणाएँ सुनाई दें।" },
+{ n: "आंधी-तूफ़ान", s: "बारिश और गरजते बादल", w: "एक स्थिर तूफ़ान व्यस्त मन को सुनने के लिए कुछ बड़ा और दूर का देता है, और बारिश छोटी अचानक आवाज़ों को ढक लेती है।", t: "धीमे से शुरू करें। बादलों की गरज दूर से आनी चाहिए, इसे इतना हल्का रखें कि वह कभी चौंकाए नहीं।" },
 ],
 pats: {
 calm: ["शांत", "7 अंदर, 5 रोकें, 7 बाहर। धीमी और स्थिर, रोज़ के लिए अच्छी लय।"],
@@ -731,7 +740,7 @@ let s = D().ui[k]; if (s == null) s = I18N.en.ui[k] || k;
 if (v) for (const n in v) s = s.split('{' + n + '}').join(v[n]);
 return s;
 };
-let ctx, master, analyser, bufs, ka = null;
+let ctx, master, bus, analyser, bufs, ka = null;
 const state = { master: 0.8 };
 let paused = false, session = null, cycleT0 = 0;
 function makeBuf(kind) {
@@ -777,6 +786,7 @@ master.gain.value = masterAmp();
 const comp = ctx.createDynamicsCompressor();
 analyser = ctx.createAnalyser();
 analyser.fftSize = 256;
+bus = ctx.createGain(); bus.connect(master);
 master.connect(comp); comp.connect(analyser); analyser.connect(ctx.destination);
 bufs = { white: makeBuf('white'), pink: makeBuf('pink'), brown: makeBuf('brown') };
 keepAlive();
@@ -1028,14 +1038,6 @@ lfo(r, .2, .1, rum.gain);
 chain(r, r.src('pink'), filt('bandpass', 700, .5), gain(.05), out);
 r.every(() => { crackle(out, .55, 300, 800, .06); setTimeout(() => crackle(out, .4, 300, 800, .06), 150); }, 620, 620, 100);
 } },
-{ id: 'cafe', group: 'rooms', name: 'Cafe', note: '', def: .4, k: 1,
-build(r, out) {
-const f1 = filt('bandpass', 620, .6), g1 = gain(.6); chain(r, r.src('pink'), f1, g1, out);
-lfo(r, .21, 200, f1.frequency); lfo(r, .37, .25, g1.gain);
-const f2 = filt('bandpass', 1500, .8), g2 = gain(.22); chain(r, r.src('pink'), f2, g2, out);
-lfo(r, .5, 500, f2.frequency); lfo(r, .9, .12, g2.gain);
-r.every(() => ping(out, 2400 + Math.random() * 2400, .3 + Math.random() * .2, .06 + Math.random() * .05), 3500, 11000);
-} },
 { id: 'fan', group: 'rooms', name: 'Ceiling fan', note: '', def: .45, k: 1,
 build(r, out) {
 const g = gain(.7); chain(r, r.src('brown'), filt('lowpass', 700), g, out);
@@ -1066,23 +1068,6 @@ r.every(() => {
 const t = ctx.currentTime + .02, f = 2500 + Math.random() * 600;
 chirp(out, t, f, 1.18, .07, .035); chirp(out, t + .13, f * 1.04, 1.15, .07, .03);
 }, 1100, 3800);
-} },
-{ id: 'owl', group: 'animals', name: 'Owl', note: '', def: .4, k: 5,
-build(r, out) {
-chain(r, r.src('pink'), filt('lowpass', 320), gain(.05), out);
-const hoot = (t, f, d, a) => {
-[[1, 1], [2, .16]].forEach(([m, aa]) => {
-const o = ctx.createOscillator(), lp = filt('lowpass', 900), g = gain(0);
-o.type = 'sine'; o.frequency.setValueAtTime(f * m * 1.04, t); o.frequency.exponentialRampToValueAtTime(f * m * .96, t + d);
-g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(a * aa, t + .08); g.gain.exponentialRampToValueAtTime(.0005, t + d);
-o.connect(lp); lp.connect(g); g.connect(out); o.start(t); o.stop(t + d + .05);
-setTimeout(() => { try { g.disconnect(); lp.disconnect(); } catch (e) {} }, (d + .4) * 1000);
-});
-};
-r.every(() => {
-const f = 290 + Math.random() * 70, t = ctx.currentTime + .05;
-hoot(t, f, .5, .3); hoot(t + .75, f * .96, .3, .22); hoot(t + 1.2, f * .96, .3, .22); hoot(t + 1.65, f * .93, .75, .26);
-}, 9000, 24000, 2500);
 } },
 { id: 'purr', group: 'animals', name: 'Cat purring', note: '', def: .45, k: 1,
 build(r, out) {
@@ -1161,12 +1146,6 @@ crackle(out, .07 + Math.random() * .07, 2500, 6000, .22 + Math.random() * .2);
 if (Math.random() < .4) setTimeout(() => thump(out, ctx.currentTime, 90, .07), 300 + Math.random() * 200);
 }, 7000, 19000, 3000);
 } },
-{ id: 'rainycafe', group: 'rooms', name: 'Rainy café', note: '', def: .4, k: 1,
-build(r, out) {
-sounds.find(s => s.id === 'cafe').build(r, out);
-const rg = r.node(gain(.5)); rg.connect(out);
-sounds.find(s => s.id === 'windowrain').build(r, rg);
-} },
 { id: 'trainrain', group: 'rooms', name: 'Train in the rain', note: '', def: .45, k: 1,
 build(r, out) {
 sounds.find(s => s.id === 'train').build(r, out);
@@ -1222,16 +1201,24 @@ const amp = s => Math.pow(s.vol, 1.6) * s.k;
 const anyOn = () => sounds.some(s => s.on);
 const byId = Object.fromEntries(sounds.map(s => [s.id, s]));
 sounds.forEach(s => { s.on = false; s.vol = s.def; s.vis = 0; s.seed = Math.random() * 6.28; });
+function softStart() {
+if (!ctx || !bus) return;
+const n = ctx.currentTime;
+bus.gain.cancelScheduledValues(n); bus.gain.setValueAtTime(0, n);
+bus.gain.linearRampToValueAtTime(.2, n + 3);
+bus.gain.linearRampToValueAtTime(1, n + 33);
+}
 function turnOn(s) {
 if (paused) { paused = false; if (ctx) ctx.resume(); if (ka) ka.play().catch(() => {}); }
 ensure();
 if (s.on) return;
+if (!anyOn()) softStart();
 if (s.vol < .05) { s.vol = s.def; }
 s.on = true;
-s.ch = ctx.createGain(); s.ch.gain.value = 0; s.ch.connect(master);
+s.ch = ctx.createGain(); s.ch.gain.value = 0; s.ch.connect(bus);
 s.rig = newRig();
 s.build(s.rig, s.ch);
-s.ch.gain.setTargetAtTime(amp(s), ctx.currentTime, .25);
+s.ch.gain.setTargetAtTime(amp(s), ctx.currentTime, 1);
 syncRow(s); refresh();
 }
 function turnOff(s) {
@@ -1262,10 +1249,11 @@ lastMix = mix; lastGoal = gi; goalIdx = gi;
 paused = false;
 if (ka) ka.play().catch(() => {});
 ensure();
+if (!anyOn()) softStart();
 sounds.forEach(s => {
 if (mix[s.id] != null) {
 s.vol = mix[s.id];
-if (s.on) s.ch.gain.setTargetAtTime(amp(s), ctx.currentTime, .3); else turnOn(s);
+if (s.on) s.ch.gain.setTargetAtTime(amp(s), ctx.currentTime, .6); else turnOn(s);
 syncRow(s);
 } else turnOff(s);
 });
@@ -1286,10 +1274,10 @@ const GOALMIX = [
 { brown: .4, waves: .3, wind: .1 }, { pink: .4, rain: .3 }, { bowl: .4, wind: .12, stream: .2 },
 { stream: .5, wind: .2, crickets: .15 }, { brown: .35, waves: .4, bowl: .2 }, { pink: .4, rain: .25 },
 { embers: .5, rain: .3 }, { campfire: .6, crickets: .3, wind: .12, stream: .15 }, { waves: .35, bowl: .3, wind: .1 },
-{ pink: .3 }, { rain: .55, thunder: .3, embers: .3 }, { brown: .45, pink: .25 }, { train: .55, cafe: .1, fan: .1 }
+{ pink: .3 }, { rain: .55, thunder: .3, embers: .3 }, { brown: .45, pink: .25 }, { train: .55, fan: .1 }, { storm: .7, wind: .2, thunder: .2 }
 ];
-const GOALTIMER = [30, 20, 20, 15, 20, 0, 0, 0, 30, 0, 0, 0, 0];
-const GOALSESSION = [1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0];
+const GOALTIMER = [30, 20, 20, 15, 20, 0, 0, 0, 30, 0, 0, 0, 0, 0];
+const GOALSESSION = [1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 const timer = { end: 0, total: 1, id: 0, fading: false };
 const timerPop = $('#timerPop'), timerBtn = $('#timerBtn'), timerLbl = $('#timerLbl');
 const timerChips = [...timerPop.querySelectorAll('[data-min]')];
@@ -1388,7 +1376,7 @@ timerBtn.setAttribute('aria-label', T('timer')); $('#timerPop').setAttribute('ar
 $('#sleepBtn').setAttribute('aria-label', T('sleep')); $('#sleepBtn').title = T('sleep_hint');
 $('#sheetClose').setAttribute('aria-label', T('close'));
 $('#qNew').textContent = T('q_new');
-$('#nightBtn').title = T('night');
+nightLabel();
 timerChips.forEach(b => { if (b.dataset.min !== '0') b.textContent = T('min', { n: b.dataset.min }); });
 $('#wakeBtn').hidden = !('wakeLock' in navigator);
 }
@@ -1396,8 +1384,12 @@ function renderSheet() {
 const scenes = $('#scenes'); scenes.innerHTML = '';
 D().scenes.forEach(([n, sub], i) => {
 const b = document.createElement('button');
-b.type = 'button'; b.className = 'chip sm'; b.textContent = n; b.title = sub;
-b.addEventListener('click', () => applyMix(SCENES[i]));
+b.type = 'button'; b.className = 'scn';
+b.innerHTML = '<b></b><small></small>'; b.querySelector('b').textContent = n; b.querySelector('small').textContent = sub;
+b.addEventListener('click', () => {
+if (anyOn() && !paused && lastMix === SCENES[i]) { stopAll(); return; }
+goalIdx = -1; applyMix(SCENES[i]);
+});
 scenes.append(b);
 });
 const pl = $('#playing'); pl.innerHTML = '<p class="none" id="noneMsg"></p>';
@@ -1434,7 +1426,7 @@ const cardBox = $('#cards');
 const detail = document.createElement('div'); detail.className = 'detail'; detail.setAttribute('aria-live', 'polite');
 const TILE_C = { fire: ['#3b1f12', '#140e11'], rain: ['#1d3340', '#0e1a22'], sea: ['#17394a', '#0c1a24'], stream: ['#1b3a30', '#0d1b1a'], sleep: ['#2a2250', '#0e1020'], bowl: ['#2d2454', '#120f26'], wind: ['#27393f', '#0e1a20'], train: ['#2c2a3a', '#0e0f18'] };
 const TILE_N = { fire: 22, rain: 34, sea: 0, stream: 12, sleep: 26, bowl: 0, wind: 14, train: 10 };
-const SCENE_OF = ['sleep', 'wind', 'bowl', 'stream', 'sea', 'rain', 'fire', 'fire', 'sea', 'sleep', 'rain', 'wind', 'train'];
+const SCENE_OF = ['sleep', 'wind', 'bowl', 'stream', 'sea', 'rain', 'fire', 'fire', 'sea', 'sleep', 'rain', 'wind', 'train', 'rain'];
 const SPEED = { fire: 3, rain: 9, stream: 1, sleep: .5, wind: 1.4, train: 1.2 };
 let tiles = [], tileRO = null, tileIO = null;
 function tdot(g, px, py, r, col, a) {
@@ -1540,7 +1532,12 @@ b.addEventListener('click', () => startSession(false)); acts.append(b);
 }
 }
 let shownGoal = -2;
+function syncScenes() {
+const on = anyOn() && !paused;
+document.querySelectorAll('#scenes .scn').forEach((b, i) => b.setAttribute('aria-pressed', on && lastMix === SCENES[i] && goalIdx < 0));
+}
 function syncCards() {
+syncScenes();
 const on = anyOn() && goalIdx >= 0;
 if (!anyOn()) goalIdx = -1;
 cardBox.querySelectorAll('.gcard').forEach((b, i) => b.setAttribute('aria-pressed', i === goalIdx && on));
@@ -1679,14 +1676,17 @@ function renderAll() {
 renderStatic(); renderSheet(); renderGoals(); renderBreathe(); renderLearn(); renderDev(); showQuote(true);
 lastWord = ''; lastHint = ''; updateSession();
 }
-const nightBtn = $('#nightBtn');
+function nightLabel() {
+const b = $('#nightBtn'), on = document.documentElement.classList.contains('night');
+b.textContent = T(on ? 'day' : 'night'); b.setAttribute('aria-pressed', on);
+}
 function setNight(on, save) {
 document.documentElement.classList.toggle('night', on);
-nightBtn.setAttribute('aria-pressed', on);
+nightLabel();
 const m = document.querySelector('meta[name=theme-color]'); if (m) m.content = on ? '#06080a' : '#0F1B24';
 if (save) store.set('night', on ? '1' : '0');
 }
-nightBtn.addEventListener('click', () => setNight(!document.documentElement.classList.contains('night'), true));
+$('#nightBtn').addEventListener('click', () => setNight(!document.documentElement.classList.contains('night'), true));
 setNight(store.get('night') === '1', false);
 document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => { lang = b.dataset.lang; store.set('lang', lang); renderAll(); }));
 const playBtn = $('#playBtn');
@@ -1882,9 +1882,9 @@ dot(p.x, p.y, p.r, this.col, a * .5 * Math.sin(Math.PI * p.t / p.ttl)); } }
 const SK = { campfire: ['ember', 50], embers: ['ember', 22], rain: ['rain', 120], stream: ['ripple', 7], wind: ['streak', 12],
 crickets: ['firefly', 16], white: ['dust', 36], pink: ['dust', 36], brown: ['dust', 36], bowl: ['mote', 14],
 delta: ['mote', 16], theta: ['mote', 16], alpha: ['mote', 16], hz432: ['mote', 14], hz528: ['mote', 14],
-storm: ['rain', 150], birds: ['firefly', 10], heartbeat: ['mote', 14], train: ['streak', 14], cafe: ['dust', 24], fan: ['dust', 30],
-frogs: ['ripple', 6], owl: ['firefly', 6], purr: ['mote', 12], whale: ['mote', 14], cicadas: ['firefly', 14], chimes: ['mote', 12],
-clock: ['mote', 8], windowrain: ['rain', 70], library: ['dust', 18], rainycafe: ['rain', 60], trainrain: ['rain', 70] };
+storm: ['rain', 150], birds: ['firefly', 10], heartbeat: ['mote', 14], train: ['streak', 14], fan: ['dust', 30],
+frogs: ['ripple', 6], purr: ['mote', 12], whale: ['mote', 14], cicadas: ['firefly', 14], chimes: ['mote', 12],
+clock: ['mote', 8], windowrain: ['rain', 70], library: ['dust', 18], trainrain: ['rain', 70] };
 const pools = {};
 const GLOW = { fire: [.3, 1.05], water: [.85, 1.0], air: [.9, .0], noise: [.1, .05], tones: [.5, .45], rooms: [.5, .9], animals: [.55, .6] };
 function fxFrame(ms) {
