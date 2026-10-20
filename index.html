@@ -206,6 +206,14 @@ body.sleep .chatfab,body.sleep .chatwin{display:none!important}
 .wl button{flex:none;padding:0 1rem}
 .orbwrap{width:min(78vw,300px);margin-top:.4rem}
 }
+.accs{margin-top:1.4rem;border-bottom:1px solid var(--line)}
+.acc{border-top:1px solid var(--line)}
+.acc summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem 0;font:300 1.25rem/1.2 var(--serif);font-variation-settings:"SOFT" 100;color:var(--mist)}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"+";font:300 1.6rem/1 var(--sans);color:var(--dim);flex:none}
+.acc[open] summary::after{content:"\2212"}
+.acc .body{margin-top:0}
+.acc .habits{margin:.7rem 0 1.2rem}
 .habits{list-style:none;padding:0;display:grid;gap:.7rem;margin-top:.9rem;color:var(--dim)}
 .habits li{padding-left:1.3rem;position:relative}
 .habits li::before{content:"";position:absolute;left:0;top:.6em;width:.45rem;height:.45rem;border-radius:50%;background:var(--mist);opacity:.6}
@@ -335,16 +343,21 @@ body.sleep #stage{display:grid!important}
     <p class="fine" data-i18n="disc">Balance Tones is a relaxation aid, not medical treatment. If sleep problems or anxiety last for weeks, talk to a doctor or therapist.</p>
   </section>
   <section class="view page" id="v-soon" hidden>
-    <span class="soon-badge" data-i18n="nav_soon">AI Therapist</span>
+    <span class="soon-badge" data-i18n="soon_badge">Coming soon</span>
     <h2 data-i18n="soon_h">Your online therapist, on the go</h2>
     <p class="body" data-i18n="soon_p1"></p>
-    <p class="body" data-i18n="soon_p2"></p>
     <form class="wl" data-src="page" novalidate><input type="text" name="c" autocomplete="off" maxlength="120" data-i18n-ph="wl_ph" data-i18n-aria="wl_ph" placeholder="Email or WhatsApp number"><button type="submit" data-i18n="wl_btn">Join the waitlist</button></form><p class="wl-msg" role="status" data-i18n="wl_note"></p>
-    <h2 data-i18n="ai_why_h">Why an AI therapist</h2>
-    <p class="body" data-i18n="ai_why_p"></p>
-    <ul class="habits feat" id="whyAi"></ul>
-    <h2 data-i18n="soon_fh">Features</h2>
-    <ul class="habits feat" id="soonList"></ul>
+    <div class="accs">
+      <details class="acc" id="accWhy">
+        <summary data-i18n="ai_why_h">Why an AI therapist</summary>
+        <p class="body" data-i18n="ai_why_p"></p>
+        <ul class="habits feat" id="whyAi"></ul>
+      </details>
+      <details class="acc" id="accFeat">
+        <summary data-i18n="soon_fh">Features</summary>
+        <ul class="habits feat" id="soonList"></ul>
+      </details>
+    </div>
     <p class="fine" data-i18n="soon_note"></p>
   </section>
   <section class="view page" id="v-developer" hidden>
@@ -1921,6 +1934,8 @@ function exitSleep(stop = true) {
 $('#sleepBtn').addEventListener('click', enterSleep);
 $('#sleepExit').addEventListener('click', () => exitSleep(true));
 addEventListener('keydown', e => { if (e.key === 'Escape' && sleeping) exitSleep(true); });
+/* ---------- AI therapist page: open sections on wide screens only ---------- */
+{ const wide = matchMedia('(min-width:720px)').matches; document.querySelectorAll('details.acc').forEach(d => { d.open = wide; }); }
 /* ---------- therapist chat bubble ---------- */
 const chatFab = $('#chatFab'), chatWin = $('#chatWin');
 function chatOpen(on) {
