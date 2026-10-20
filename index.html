@@ -148,6 +148,10 @@ details.item .src a{color:var(--mist);text-underline-offset:3px;margin-right:.8r
 .feat li strong{display:block;color:var(--mist);font-weight:500;margin-bottom:.1rem}
 .chatfab{position:fixed;right:1.1rem;bottom:calc(var(--dock) + .9rem + env(safe-area-inset-bottom));z-index:25;display:flex;align-items:center;gap:.5rem;height:48px;padding:0 1.05rem 0 .8rem;border-radius:999px;border:1px solid var(--line);background:rgba(10,19,26,.94);color:var(--mist);font:500 .92rem var(--sans,inherit);cursor:pointer;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 6px 24px rgba(0,0,0,.35)}
 .chatfab:hover{border-color:var(--mist)}
+.chatfab::after{content:"";position:absolute;inset:-1px;border-radius:999px;border:1px solid var(--mist);opacity:0;pointer-events:none;animation:fabPulse 4.5s ease-out infinite}
+.chatfab[aria-expanded=true]::after,.chatfab:hover::after{animation:none}
+@keyframes fabPulse{0%{opacity:.5;transform:scale(1)}35%{opacity:0;transform:scale(1.22,1.45)}100%{opacity:0;transform:scale(1.22,1.45)}}
+@media(prefers-reduced-motion:reduce){.chatfab::after{animation:none}}
 .chatfab svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .chatfab .hrt{fill:currentColor;stroke:none;opacity:.85}
 .chatwin{position:fixed;right:1.1rem;bottom:calc(var(--dock) + 4.6rem + env(safe-area-inset-bottom));z-index:26;width:min(390px,calc(100vw - 2.2rem));max-height:min(620px,calc(100vh - var(--dock) - 6.5rem));display:flex;flex-direction:column;border:1px solid var(--line);border-radius:18px;background:rgba(10,19,26,.97);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 18px 60px rgba(0,0,0,.5);overflow:hidden}
