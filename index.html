@@ -376,6 +376,20 @@ body.route-soon.tpon #v-soon{max-width:1120px;padding-top:.2rem}
   .tpdock{padding:.3rem .8rem .6rem}
 }
 @media(prefers-reduced-motion:reduce){.tpside{transition:none}.tpm{animation:none}.tpdots i{animation:none;opacity:.6}}
+
+body.route-soon.tpon{overflow:hidden}
+body.route-soon.tpon .top,body.route-soon.tpon .dock{display:none}
+body.route-soon.tpon .tpapp{position:fixed;inset:0;z-index:60;height:100vh;height:100dvh;max-width:none;border:0;border-radius:0;background:var(--night);backdrop-filter:none}
+.tpside{overflow:auto}
+.tps-brand{padding:1rem 1.1rem .3rem}
+.tps-brand .mark{font-size:1.35rem}
+.tps-nav{padding:.5rem .5rem .2rem;display:grid;gap:.4rem}
+.tpside .nav{order:0;display:flex;flex-direction:column;align-items:stretch;gap:2px;width:100%;margin:0;padding:0;overflow:visible;-webkit-mask-image:none;mask-image:none}
+.tpside .nav a,.tpside .nav button{display:flex;align-items:center;text-align:left;white-space:normal;font-size:.92rem;padding:.55rem .7rem;border:0;border-radius:9px;color:var(--mist);opacity:.8;background:none;width:100%;overflow:visible}
+.tpside .nav a:hover,.tpside .nav button:hover{background:rgba(203,191,174,.08);opacity:1}
+.tpside .nav a[aria-current=page]{background:rgba(242,160,101,.16);color:#F2A065;opacity:1}
+.tpside .lang{padding:.1rem .3rem .4rem}
+.tps-top{padding-top:.6rem;border-top:1px solid var(--line);margin-top:.3rem}
 @keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
 @keyframes orbin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -482,6 +496,8 @@ body.route-soon.tpon #v-soon{max-width:1120px;padding-top:.2rem}
     </div>
     <div id="tpChat" class="tpapp" hidden>
       <aside class="tpside" id="tpSide">
+        <div class="tps-brand"><a class="mark" href="#/">Balance Tones</a></div>
+        <div class="tps-nav" id="tpNavSlot"></div>
         <div class="tps-top"><button type="button" class="tpnew" id="tpNew"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="tp_new">New chat</span></button></div>
         <div class="tps-lab" data-i18n="tp_chats">Chats</div>
         <nav class="tpchats" id="tpChats" data-i18n-aria="tp_chats" aria-label="Chats"></nav>
@@ -2025,12 +2041,7 @@ let tpChats = [], tpCur = null;
 const tpApp = $('#tpChat'), TPWL = $('.tpwl');
 function tpName() { return (tpSel.n || '').trim() || TP_DEFAULT[tpSel.g]; }
 function tpNewChat() { const c = { id: Date.now() + Math.random(), title: '', msgs: [] }; tpChats.unshift(c); tpCur = c; return c; }
-function tpFit() {
-  if (tpApp.hidden) return;
-  const top = tpApp.getBoundingClientRect().top + window.scrollY;
-  const h = window.innerHeight - (top - window.scrollY) - 68 - 14;
-  tpApp.style.height = Math.max(430, h) + 'px';
-}
+function tpFit() {}
 function tpAv(cls) { const d = document.createElement('div'); d.className = 'tpav ' + (cls || ''); d.setAttribute('aria-hidden', 'true'); const sp = document.createElement('span'); sp.textContent = Array.from(tpName())[0].toUpperCase(); d.append(sp); return d; }
 function tpMsgEl(m) {
   const row = document.createElement('div'); row.className = 'tpm ' + m.r;
@@ -2067,12 +2078,17 @@ function tpRender() {
   ['tp_c1', 'tp_c2', 'tp_c3', 'tp_c4'].forEach(k => { const b = document.createElement('button'); b.type = 'button'; b.textContent = T(k); b.addEventListener('click', () => { const i = $('#tpIn'); i.value = T(k); tpGrow(); i.focus(); }); ch2.append(b); });
   if (tpCur) { $('#tpChatTitle').textContent = tpCur.title || T('tp_newt'); tpRenderChat(); }
 }
+const TP_NAV = document.querySelector('header.top .nav'), TP_LANG = document.querySelector('header.top .lang'), TP_TOP = document.querySelector('header.top');
+function tpMoveNav(into) {
+  if (into) { const slot = $('#tpNavSlot'); slot.append(TP_NAV, TP_LANG); }
+  else { TP_TOP.append(TP_NAV, TP_LANG); }
+}
 function tpShow(chat) {
+  tpMoveNav(chat);
   $('#tpSetup').hidden = chat; tpApp.hidden = !chat;
   document.body.classList.toggle('tpon', chat); tpApp.classList.remove('menu');
   window.scrollTo({ top: 0, behavior: 'auto' });
-  if (chat) { if (!tpCur) tpNewChat(); tpRender(); tpRenderChat(); tpFit(); $('#tpIn').focus({ preventScroll: true }); }
-  else tpApp.style.height = '';
+  if (chat) { if (!tpCur) tpNewChat(); tpRender(); tpRenderChat(); $('#tpIn').focus({ preventScroll: true }); }
 }
 function tpGrow() { const i = $('#tpIn'); i.style.height = 'auto'; i.style.height = Math.min(i.scrollHeight, 150) + 'px'; $('#tpSend').disabled = !i.value.trim(); }
 $('#tpName').value = tpSel.n;
@@ -2100,7 +2116,7 @@ $('#tpComp').addEventListener('submit', e => {
   setTimeout(() => { c.msgs.push({ r: 'bot', t: T('tp_reply') }); if (tpCur === c) tpRenderChat(); else typing.remove(); }, 1100);
 });
 addEventListener('resize', tpFit);
-addEventListener('hashchange', () => { if (location.hash === '#/soon') setTimeout(tpFit, 0); });
+addEventListener('hashchange', () => { if (location.hash !== '#/soon' && !tpApp.hidden) tpShow(false); });
 
 /* ---------- visit counter (approximate city and country only) ---------- */
 (function visitPing() {
