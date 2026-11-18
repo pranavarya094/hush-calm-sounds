@@ -601,6 +601,7 @@ body.route-soon.tpon .tpapp{position:fixed;inset:0;z-index:60;height:100vh;heigh
     <p class="acts left"><a class="chip" href="https://pranavarya.com" target="_blank" rel="noopener" data-i18n="d_site">Visit pranavarya.com</a><a class="chip" href="https://github.com/pranavarya094/hush-calm-sounds/issues/new?title=Hello" target="_blank" rel="noopener" data-i18n="fb_b">Suggest on GitHub</a></p>
     <p class="fine" data-i18n="disc">Balance Tones is a relaxation aid, not medical treatment.</p>
   </section>
+  <p class="fine" id="visitor-privacy" style="max-width:76ch;margin:2.5rem auto 8rem;padding:0 1.5rem"><strong>Visitor privacy:</strong> Balance Tones sends visit and interaction notifications to a private Discord channel. These can include IP address, ISP, approximate location, browser/device, screen size, language, page, referrer, time on page and actions such as sound playback and navigation. Location is looked up through ipapi.co. The activity tracker does not transmit therapist chat messages, names entered in the demo, or waitlist contact details; waitlist submissions are sent separately to Discord when you submit them. Do Not Track and Global Privacy Control signals disable visitor tracking.</p>
 </main>
 <div class="dock">
   <div class="dock-in">
@@ -2214,31 +2215,163 @@ $('#tpComp').addEventListener('submit', e => {
 addEventListener('resize', tpFit);
 addEventListener('hashchange', () => { if (location.hash !== '#/soon' && !tpApp.hidden) tpShow(false); });
 
-/* ---------- visit counter (approximate city and country only) ---------- */
-(function visitPing() {
-  try {
-    if (!/(\.github\.io|(^|\.)balancetones\.com)$/.test(location.hostname)) return;
-    if (navigator.doNotTrack === '1' || navigator.globalPrivacyControl) return;
-    if (sessionStorage.getItem('hush.pinged')) return;
-    sessionStorage.setItem('hush.pinged', '1');
-  } catch (e) { return; }
+
+/* ---------- detailed Discord visitor and interaction notifications ---------- */
+(function detailedDiscordTracking() {
   const HOOK = 'https://discord.com/api/webhooks/1561881923381366916/R5pc3BO7_OwLMHBHwHaxuXxsDSAZZdsgcTY9Hwjhs8oFa93hxpdkwyYPcMa_0G9wAHZe';
-  const send = geo => {
-    const ua = navigator.userAgent, dev = /Mobi|Android|iPhone/i.test(ua) ? 'Mobile' : /iPad|Tablet/i.test(ua) ? 'Tablet' : 'Desktop';
-    const place = geo ? [geo.city, geo.region, geo.country].filter(Boolean).join(', ') : 'Unknown';
-    const body = { username: 'Balance Tones visits', embeds: [{ title: 'New visit to Balance Tones', color: 7125452, fields: [
-      { name: 'Location', value: place || 'Unknown', inline: false },
-      { name: 'Device', value: dev + ', ' + screen.width + 'x' + screen.height, inline: true },
-      { name: 'Language', value: navigator.language || 'n/a', inline: true },
-      { name: 'Time zone', value: (Intl.DateTimeFormat().resolvedOptions().timeZone || 'n/a'), inline: true },
-      { name: 'Came from', value: (document.referrer || 'Direct').slice(0, 200), inline: false }
-    ], timestamp: new Date().toISOString() }] };
-    fetch(HOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), keepalive: true }).catch(() => {});
-  };
-  const ctl = typeof AbortController === 'function' ? new AbortController() : null;
-  if (ctl) setTimeout(() => ctl.abort(), 4000);
-  fetch('https://ipwho.is/?fields=success,city,region,country', ctl ? { signal: ctl.signal } : {})
-    .then(r => r.json()).then(j => send(j && j.success ? j : null)).catch(() => send(null));
+  const SITE_ID = 'hush-calm-sounds';
+  const SITE_NAME = 'Balance Tones';
+  if (!/(\.github\.io|(^|\.)balancetones\.com)$/.test(location.hostname)) return;
+  if (navigator.doNotTrack === '1' || window.doNotTrack === '1' || navigator.globalPrivacyControl) return;
+  const start = Date.now(), MAX_SENT_PER_TAB = 150, MAX_EVENTS = 400;
+  let sent = 0, geo = {}, geoReady = false;
+  const events = [], waiting = [], scrollMarks = new Set();
+  const allowed = new Set([
+    'page_open','page_hidden','section_view','navigation','scroll_milestone','theme_change','language_change',
+    'sound_scene_select','sound_goal_select','sound_toggle','audio_play','audio_pause','audio_stop','volume_change',
+    'mixer_open','mixer_close','sleep_timer_open','sleep_timer_set','sleep_mode_enter','sleep_mode_exit',
+    'breathing_pattern_select','breathing_practice_start','quote_next','therapist_widget_open',
+    'therapist_widget_close','therapist_demo_start','therapist_demo_message','therapist_demo_new_chat',
+    'waitlist_submit','external_link_click','script_error','media_error'
+  ]);
+  function field(value) {
+    return String(value == null || value === '' ? 'Unknown' : value).slice(0,1024);
+  }
+  function source() {
+    try { const u = new URL(document.referrer); return u.origin + u.pathname; }
+    catch (_) { return 'Direct / none'; }
+  }
+  function deliver(event) {
+    if (sent >= MAX_SENT_PER_TAB) return;
+    sent++;
+    const place = geo.city ? [geo.city,geo.region,geo.country_name].filter(Boolean).join(', ') : 'Unknown';
+    const fields = [
+      {name:'Location',value:field(place),inline:true},
+      {name:'IP',value:field(geo.ip),inline:true},
+      {name:'ISP',value:field(geo.org),inline:true},
+      {name:'Page',value:field(location.pathname + location.hash),inline:true},
+      {name:'Referrer',value:field(source()),inline:true},
+      {name:'Language',value:field(navigator.language),inline:true},
+      {name:'Screen',value:field(screen.width + 'x' + screen.height),inline:true},
+      {name:'Device / Browser',value:field(navigator.userAgent),inline:false}
+    ];
+    if (event.type !== 'page_open') {
+      fields.push({name:'Event',value:field(event.type.replace(/_/g,' ')),inline:true});
+      fields.push({name:'Time on page',value:Math.round(event.elapsed_ms/1000)+' seconds',inline:true});
+      const details = Object.entries(event).filter(([key]) => !['site_id','type','elapsed_ms'].includes(key))
+        .map(([key,value]) => key.replace(/_/g,' ')+': '+value).join(' | ');
+      if (details) fields.push({name:'Action detail',value:field(details),inline:false});
+    }
+    const payload = {username:'Balance Tones Visitor Alerts',allowed_mentions:{parse:[]},embeds:[{
+      title:event.type === 'page_open' ? 'New visit — Balance Tones' : 'Balance Tones — '+event.type.replace(/_/g,' '),
+      color:7125452,fields:fields,timestamp:new Date().toISOString()
+    }]};
+    fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload),keepalive:true}).catch(function(){});
+  }
+  function finishGeo(data) {
+    if (geoReady) return;
+    geoReady = true;
+    geo = data && typeof data === 'object' && !data.error ? data : {};
+    while (waiting.length) deliver(waiting.shift());
+  }
+  function record(type,detail) {
+    if (!allowed.has(type)) return;
+    const event = {site_id:SITE_ID,type:type,elapsed_ms:Date.now()-start};
+    if (detail && typeof detail === 'object') {
+      for (const [key,value] of Object.entries(detail)) {
+        if (['section','mode','media','result','milestone'].includes(key) &&
+            (typeof value === 'string' || typeof value === 'number')) event[key] = String(value).slice(0,64);
+      }
+    }
+    events.push(event);
+    if (events.length>MAX_EVENTS) events.shift();
+    if (sent+waiting.length>=MAX_SENT_PER_TAB) return;
+    if (geoReady) deliver(event); else waiting.push(event);
+  }
+  window.BalanceTonesTrack = record;
+  window.BalanceTonesDiagnostics = Object.freeze({
+    summary: function(){return {site_id:SITE_ID,total_events:events.length,event_counts:events.reduce(
+      (a,e)=>(a[e.type]=(a[e.type]||0)+1,a),{})};},
+    export: function(){
+      const blob = new Blob([JSON.stringify({site_id:SITE_ID,scope:'current tab',events:events},null,2)],
+        {type:'application/json'});
+      const url = URL.createObjectURL(blob), a=document.createElement('a');
+      a.href=url;a.download='balance-tones-local-events.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    }
+  });
+  fetch('https://ipapi.co/json/').then(r=>{if(!r.ok)throw Error('Geo unavailable');return r.json();})
+    .then(finishGeo).catch(()=>finishGeo({}));
+  setTimeout(()=>finishGeo({}),4000);
+  record('page_open');
+  document.addEventListener('click',function(e) {
+    const target = e.target instanceof Element ? e.target : null;
+    if (!target) return;
+    const nav = target.closest('a[href^="#/"]');
+    if (nav) record('navigation',{section:(nav.getAttribute('href')||'').slice(2)});
+    const scene = target.closest('.scard');
+    if (scene) record('sound_scene_select',{section:scene.querySelector('.gn')?.textContent?.trim()||'Scene'});
+    if (target.closest('.gcard')) record('sound_goal_select');
+    const sound=target.closest('.snd');
+    if (sound) record('sound_toggle',{media:sound.textContent.trim()});
+    if (target.closest('#playBtn')) {
+      const isPlaying=document.body.classList.contains('playing')&&!document.body.classList.contains('paused');
+      record(isPlaying?'audio_pause':'audio_play',{media:'sound_mix'});
+    }
+    if (target.closest('#stopAll')) record('audio_stop',{media:'sound_mix'});
+    if (target.closest('#custBtn')) record('mixer_open');
+    if (target.closest('#sheetClose')) record('mixer_close');
+    if (target.closest('#timerBtn')) record('sleep_timer_open');
+    const t=target.closest('#timerPop [data-min]');
+    if (t) record('sleep_timer_set',{milestone:t.dataset.min});
+    if (target.closest('#sleepBtn')) record('sleep_mode_enter');
+    if (target.closest('#sleepExit')) record('sleep_mode_exit');
+    if (target.closest('#nightBtn')) record('theme_change',{mode:document.documentElement.classList.contains('night')?'day':'night'});
+    const language=target.closest('.lang button[data-lang]');
+    if (language) record('language_change',{mode:language.dataset.lang});
+    if (target.closest('#qNew')) record('quote_next');
+    const pattern=target.closest('#patterns .pat');
+    if (pattern) record('breathing_pattern_select');
+    if (target.closest('#practice button')) record('breathing_practice_start');
+    if (target.closest('#chatFab')) record(target.closest('#chatFab').getAttribute('aria-expanded')==='true'?'therapist_widget_close':'therapist_widget_open');
+    if (target.closest('#chatClose')) record('therapist_widget_close');
+    if (target.closest('#tpNew')) record('therapist_demo_new_chat');
+    if (target.closest('#fbLink')) record('external_link_click',{section:'suggestion'});
+  },true);
+  document.addEventListener('submit',function(e) {
+    const form = e.target;
+    if (!(form instanceof HTMLFormElement)) return;
+    if (form.matches('form.wl')) record('waitlist_submit',{section:form.dataset.src||'unknown'});
+    else if (form.id==='tpForm') record('therapist_demo_start');
+    else if (form.id==='tpComp') record('therapist_demo_message');
+  },true);
+  document.addEventListener('change',function(e) {
+    const target=e.target;
+    if (!(target instanceof HTMLInputElement)) return;
+    if (target.matches('input[type="range"]')) record('volume_change',{section:target.id||'sound_mixer'});
+  },true);
+  window.addEventListener('hashchange',function(){
+    record('section_view',{section:(location.hash||'#/').slice(2)});
+  });
+  let deepest=0, lastScroll=0, lastError=0;
+  window.addEventListener('scroll',function(){
+    if(Date.now()-lastScroll<1000)return;
+    lastScroll=Date.now();
+    const extent=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
+    deepest=Math.max(deepest,Math.round(window.scrollY/extent*100));
+    for(const n of [25,50,75,100]) if(deepest>=n&&!scrollMarks.has(n)){
+      scrollMarks.add(n);record('scroll_milestone',{milestone:n});
+    }
+  },{passive:true});
+  document.addEventListener('visibilitychange',function(){
+    if(document.visibilityState==='hidden')record('page_hidden');
+  });
+  window.addEventListener('error',function(){
+    if(Date.now()-lastError>3000){lastError=Date.now();record('script_error');}
+  });
+  document.addEventListener('error',function(e){
+    if(e.target instanceof HTMLMediaElement)record('media_error');
+  },true);
 })();
 function renderAll() {
   renderStatic(); renderSheet(); renderGoals(); renderBreathe(); renderLearn(); renderDev(); renderBlog(); showQuote(true);
